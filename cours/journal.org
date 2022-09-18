@@ -10,3 +10,195 @@
 #+LATEX_HEADER: \hypersetup{colorlinks = true}
 #+LATEX_HEADER: \usepackage[french]{babel}
 # (org-latex-export-to-pdf)
+* Cours 1 <2022-09-16>
+** Introduction
+   Bienvenue dans le cours _Circuits et architecture_ !
+
+   Les années précédentes, vous avez utilisé des outils et concepts comme des
+   boîtes noires, sans forcément comprendre leur fonctionnement interne. Par
+   exemple, vous avez programmé en C sans que l'on vous explique comment ce
+   langage était implémenté exactement. Durant vos deux prochaines années
+   d'études, vous allez ouvrir ces boîtes noires, et découvrir comment elles
+   fonctionnent sous le capot.
+
+   En l'occurence, l'objectif du cours _Circuit et architecture_ est d'expliquer
+   le fonctionnement des machines à calculer programmables appelées
+   /ordinateurs/. Le cours débute des couches matérielles très basses jusqu'à
+   remonter au niveau du langage C.
+*** Supports et organisation
+    Tous les documents (support, projet, feuilles de TD, etc.) sont disponibles
+    sur le dépôt Git du module.
+
+    https://gaufre.informatique.univ-paris-diderot.fr/aguatto/architecture-m1-22-23
+
+    Il contient notamment un résumé (syllabus) du module, qui résume toutes les
+    informations pratiques du cours et propose un plan des sujets traités séance
+    par séance. Prenons le temps de le lire ensemble.
+
+    Comme écrit dans le syllabus, l'enseignement reprend pour l'essentiel le
+    contenu du cours dispensé par M. Carton les années précédentes. Il s'appuie
+    en particulier sur le support de cours rédigé par ce dernier :
+
+    https://www.irif.fr/~carton/Enseignement/Architecture/archi.pdf
+
+    (Il existe aussi au format HTML, voir la page de M. Carton.)
+
+    Le dépôt Git du cours contient également un journal (que vous êtes en train
+    de lire !) qui résume succinctement les points traités en cours chaque
+    semaine. La notation §X.Y fera référence à la section X des notes de
+    M. Carton. Le journal sera plus détaillé lorsque le cours s'éloignera un peu
+    des dites notes.
+
+    *Attention* : la lecture des notes de M. Carton et du journal ne remplace
+    pas la présence en cours. Les notes contiennent à la fois plus et moins
+    d'information que les cours magistraux. Elles sont là pour vous permettre de
+    vous concentrer sur une prise de notes /active/, et en particulier vous
+    évite d'avoir à recopier les schémas dessinés au tableau.
+
+    Autre remarque : le cours ne contient aucun concept vraiment difficile. En
+    revanche, on va manipuler beaucoup de /niveaux d'abstraction/ différents,
+    des portes logiques jusqu'à des questions de programmation système. La
+    principale difficulté est de comprendre l'articulation de ces niveaux, qui
+    sera nécessaire pour réaliser le projet !
+** Le cours
+*** Historique général (§2.1)
+    Une histoire des machines à calculer, concept très ancien.
+
+    Dès le début, le développement des machines à calculer est motivé par des
+    besoins concrets, commerciaux et administratifs puis militaires (XXème).
+
+    Les progrès théoriques (Boole, Turing, Gödel, Church) sont parallèles aux
+    progrès pratiques mais ne les rencontrent que tardivement (1950+). En
+    particulier, si les contributions théoriques d'Alan Turing sont immenses, et
+    ses contributions pratiques grandes, on ne peut pas dire qu'il a inventé
+    l'ordinateur (= programmable) comme on l'entend parfois.
+
+    Une histoire des processeurs passe nécessairement par une histoire des
+    compagnies qui fabriquent les processeurs. L'architecture des ordinateurs
+    est dominée par l'industrie et le domaine militaire (supercalculateurs).
+
+    Une sélection biaisée vers x86 de quelques microprocesseurs :
+
+    |-------+----------+-----------+---------+---------+--------+------------|
+    | Année |      Nom | Fabricant | Mot     | Freq.   | Trans. | Notes      |
+    |-------+----------+-----------+---------+---------+--------+------------|
+    |  1971 |     4004 | Intel     | 4 bits  | 108 KHz | 2,3K   | 1er μ-proc |
+    |  1972 |     8008 | Intel     | 8 bits  | 200 KHz | 3,5K   |            |
+    |  1978 |     8086 | Intel     | 16 bits | 5 MHz   | 29K    | 1er x86    |
+    |  1985 |    80386 | Intel     | 32 bits | 12 MHz  | 275K   | 1er x86-32 |
+    |  1995 |  Pentium | Intel     | 32 bits | 60 MHz  | 3,1M   |            |
+    |  2003 |  Opteron | AMD       | 64 bits | 1,4 GHz | 106M   | 1er x86-64 |
+    |  2022 | M1 Ultra | Apple     | 64 bits | 3,2 GHz | 114G   | ARM, 20c   |
+    |-------+----------+-----------+---------+---------+--------+------------|
+
+    Beaucoup d'autres choses à l'époque et depuis 2003 : essor puis déclin des
+    architectures RISC ; récemment essor de puissants concurrents à x86-64 (ARM,
+    Nvidia) ; nouveaux segments (mobiles) ; optimisation de la consommation
+    énergétique ; l'embarqué devient dominant en volume dans les années 1990
+    (x86 y est inexistant).
+*** Les portes logiques
+    Après ces quelques éléments de contexte, rentrons dans le vif du sujet :
+    construire un ordinateur numérique programmable. On va adopter une démarche
+    ascendante (ou /bottom-up/) : on commence avec le niveau d'abstraction le
+    plus bas, puis on remonte vers le logiciel.
+
+    (À nuancer : il y a presque toujours plus bas, à moins de descendre à une
+    description quantique de la matière subatomique. Ce ne sera évidemment pas
+    le propos du cours.)
+
+    Il faut dejà nous demander ce que veut dire "numérique". De quels nombres
+    parle-t-on ? Vous connaissez déjà différents systèmes de nombres.
+
+    ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ ⊆ ℂ (⊆ ... ?)
+
+    Certains de ces ensembles sont de même cardinal ("taille"), comme ℕ, ℤ ou ℚ
+    qui sont de même cardinal strictement plus petit que celui de ℝ et ℂ. On va
+    commencer avec un ensemble de "nombres" de cardinal fini : les booléens.
+
+    Ce sera notre niveau d'abstraction de base : la numération booléenne, bâtie
+    sur l'ensemble 𝔹 = { 0, 1 }. C'est un système de nombre un peu étrange, mais
+    qui a l'avantage de pouvoir aussi être vu sous un angle logique.
+
+    En effet, les opérateurs logique NOT, AND, OR, XOR, NOR, NAND peuvent aussi
+    être compris comme des opérateurs arithmétiques. Pour cette raison, on note
+    · pour AND et + pour OR. L'analogie avec l'arithmétique est moins claire
+    pour NOT et XOR, et les notations sont donc moins fixées : pour NOT on
+    utilisera le symbole ¬ ou la barre de surlignement, pour XOR le symbole ⊕.
+
+    Ces opérateurs sont des fonctions /booléennes/, de la forme 𝔹ⁿ → 𝔹.
+
+    On rappelle qu'une fonction mathématique f : X → Y est défini comme un
+    ensemble de couples (a, b) ∈ X × Y tel que pour tout a ∈ X, il existe un
+    unique b ∈ Y tel que (a, b) ∈ f. Si X et Y sont infinis, f l'est aussi, mais
+    dans le cas des fonctions booléennes X = 𝔹ⁿ qui est fini (de cardinal 2ⁿ) et
+    Y = 𝔹 (de cardinal 2) également, donc on peut représenter la fonction comme
+    l'ensemble fini des couples entrées/sortie. C'est sa /table de vérité/.
+
+    *Q* : donner les tables de vérité de NOT, AND, OR, XOR, NOR, NAND.
+
+    (On peut remarquer que comme 1 + 1 = 1, si on souhaite voir les booléens
+    comme des nombres, on peut éventuellement penser à "0" comme dénombrant
+    "zéro éléments" et à "1" comme dénombrant "beaucoup d'éléments".)
+
+    Il est facile de vérifier que les opérateurs vérifient certaines lois
+    algébriques (découvertes par MM. Boole et de Morgan) : la négation est
+    involutive, le NOT distribue et transforme AND/OR en OR/AND, etc, AND et OR
+    sont idempotents, etc.
+
+    Il est clair que certaines de ces portes peuvent être exprimées à partir des
+    autres. Littéralement, on a NAND = NOT AND, NOR = NOT OR. Et les autres ?
+
+    *Q* : comment exprimer XOR à partir de NOT, AND, OR ?
+
+    *R* : XOR(a, b) = (a OR b) AND NOT (A AND B) = (a + b) · ¬ab = a
+
+    *Q* : connaissez-vous un autre opérateur logique que ceux de la liste ?
+
+    *A* : l'implication a ⇒ b = OR(NOT(A), B).
+
+    Ces opérateurs booléens peuvent également être vu comme des portes dans
+    circuits où chaque fil transporte un bit. Ces circuits sont orientés, au
+    sens où les fils transportent les bits dans une direction bien définie.
+    On peut voir les lois booléennes comme des transformations de circuits.
+    Voir les notes pour les notations, que vous connaissez sûrement déjà.
+
+    *Q* : montrer que NAND est un opérateur /universel/, capable d'exprimer tous
+    les autres.
+
+    *A* : NOT(a) = NAND(a, a), OR(a, b) = NAND(NOT(a), NOT(b)), AND s'exprime
+    avec NOT et OR par de Morgan, XOR et NOR s'expriment en fonction de NOT, OR
+    et AND.
+
+    *Q*, à faire chez vous : même question pour le NOR.
+
+    On a donc notre jeu de portes logiques élémentaires, qui (si on le souhaite)
+    peut être réduit au NOR ou bien au NAND. Mais quid des fonctions booléennes
+    en général ? Étant donnée une fonction / table de vérité quelconque, peut-on
+    l'exprimer avec les portes précédentes ? La réponse est oui. Voyons une
+    méthode très simple, en commençant par poser le problème.
+
+    Soit f : 𝔹ⁿ → 𝔹.
+
+    On veut coder cette fonction par une formule booléenne sur n variables x₁,
+    ..., xₙ telle que, pour tout (a₁, ..., aₙ) ∈ 𝔹ⁿ, la valeur de vérité de la
+    formule où l'on a remplacé xᵢ par aᵢ est égale à f(a₁, ..., aₙ).
+
+    Considérons l'ensemble dom(f) ⊆ 𝔹ⁿ des n-uplets de bits a tel que f(a)
+    = 1. Chaque n-uplet (a₁, ..., aₙ) peut être décrit par une conjonction de n
+    /atomes/, où un atome est une variable propositionnelle ou sa négation. Le
+    i-ème atome est xᵢ si aᵢ = 1, ¬xᵢ si aᵢ = 0.  La formule obtenue en prenant
+    la disjonction de toutes ces conjonctions a bien la propriété recherchée.
+
+    Donc toute fonction booléenne s'écrit comme une disjonction de conjonction
+    d'atomes, i.e., en /forme normale disjonctive/ (FND). De plus, cette forme
+    normale fournit une caractérisation unique (f = g ssi FND(f) = FND(g)), pour
+    un ordre d'énumération des entrées fixé.
+
+    *Attention* : la méthode décrite n'est pas une bonne méthode en pratique.
+    L'expression est énorme en général, par exemple si on donne la fonction
+    constante 1, on a une disjonction de 2ⁿ conjonctions, chacune de celle-ci
+    comprenant n atomes. On verra des méthodes plus efficaces en TD, comme celle
+    des tableaux de Karnaugh.
+
+    La semaine prochaine, on verra comment réaliser physiquement les portes
+    logiques en termes de transistors.

@@ -32,7 +32,8 @@ Bientôt disponible.
 
 ## Paramétrage
 
-Pour réaliser le projet, vous devrez :
+Pour vous lancer dans la réalisation du projet une fois celui-ci disponible,
+vous devrez :
 
 1. forker ce dépôt,
 
