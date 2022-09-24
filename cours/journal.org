@@ -2,7 +2,7 @@
 #+AUTHOR: Adrien Guatto
 #+EMAIL: guatto@irif.org
 #+LANGUAGE: fr
-#+OPTIONS: ^:nil p:nil
+#+OPTIONS: ^:nil p:nil tex:t
 #+LATEX_CLASS: article
 #+LATEX_CLASS_OPTIONS: [a4paper,11pt]
 #+LATEX_HEADER: \usepackage{a4wide}
@@ -111,9 +111,10 @@
 
     ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ ⊆ ℂ (⊆ ... ?)
 
-    Certains de ces ensembles sont de même cardinal ("taille"), comme ℕ, ℤ ou ℚ
-    qui sont de même cardinal strictement plus petit que celui de ℝ et ℂ. On va
-    commencer avec un ensemble de "nombres" de cardinal fini : les booléens.
+    Certains de ces ensembles sont de même cardinal ("taille"), comme ℕ, ℤ ou
+    ℚ qui sont de même cardinal strictement plus petit que celui de ℝ et ℂ. On
+    va commencer avec un ensemble de "nombres" de cardinal fini : les
+    booléens.
 
     Ce sera notre niveau d'abstraction de base : la numération booléenne, bâtie
     sur l'ensemble 𝔹 = { 0, 1 }. C'est un système de nombre un peu étrange, mais
@@ -202,3 +203,377 @@
 
     La semaine prochaine, on verra comment réaliser physiquement les portes
     logiques en termes de transistors.
+* Cours 2 <2022-09-23>
+** Des transistors aux portes logiques (§4)
+*** Introduction
+    C'est à partir des portes logiques et fonctions booléennes qu'on va
+    construire le reste de l'informatique. Toutefois, les portes logiques sont
+    des objets idéaux qu'il va falloir réaliser physiquement pour s'en servir.
+    Il va donc falloir parler un peu de physique et d'électronique.
+
+    L'idée est d'expliquer le fonctionnement du /transistor/, brique de base
+    des circuits intégrés (formés de millions voire milliards d'entre eux
+    !). Comme la physique-chimie dépasse largement le cadre du cours, on va en
+    donner une vision simplifiée et toujours très idéalisée.
+*** Semi-conducteurs, diodes et transistors
+    (Les notes de cours contiennent beaucoup plus de détails sur les aspects
+    physiques et chimiques de cette partie du cours, et Wikipédia encore plus.)
+
+    Un semi-conducteur est un matériau dont la conductivité électrique est
+    située entre celle des isolants et celle des métaux. On peut le traiter
+    chimiquement (/dopage/) pour modifier ses propriétés, et obtenir un
+    semi-conducteur de type /n/, qui a des électrons en trop, ou un
+    semi-conducteur de type /p/, qui a des électrons manquants, des
+    "trous".
+
+    En branchant un semi-conducteur p et un n, on obtient une diode, qui ne
+    laisse passer le courant que dans un seul sens. En appliquant une tension à
+    l'anode et à la cathode d'une diode, on peut la rendre conductrice ou
+    non-conductrice. Cela rend la diode contrôlable par un signal extérieur.
+
+    Les transistors généralisent le fonctionnement de la diode. Ils sont eux
+    aussi de deux types, /p/ et /n/. Les deux types de transistors ont trois
+    pates, nommées "grille", "source" et "drain". Leur comportement, pour
+    ce qui nous intéresse, est simplement celui d'un interrupteur, et on peut en
+    donner une description abstraite.
+
+    Dans un transistor de type /n/, lorsque la grille reçoit une tension de
+    2,9V, l'interrupteur est fermé et source et drains sont connectés (source =
+    drain, le transistor agit comme un fil). Si la grille ne reçoit pas de
+    tension (0V), l'interrupteur est ouvert et il n'y a aucun lien entre source
+    et drain. Les transistors /p/ agissent de façon symétrique, connectant
+    source et drain lorsque la tension de la grille est 0V, et la fermant à 0V.
+
+    (Le comportement complémentaire des transistors /n/ et /p/ explique le nom
+    donné aux circuits qui en sont composés : /Complementary Metal-Oxyde
+    Semiconductors/, ou CMOS.)
+
+    On peut donc comprendre le comportement des transistors de façon purement
+    logique. La tension 2,9V correspond au booléen 1, et 0V au booléen 0. Le
+    transistor /n/ peut être décrit par la formule
+
+      grille ⇒ (source = drain)
+
+    et le transistor /p/ par la formule
+
+      ¬grille ⇒ (source = drain).
+
+     où "source = drain" est OR(AND(drain, source), AND(¬drain,¬source)).).
+
+    On peut donc donner un sens purement logique, extra-physique, aux circuits
+    composés de transistors. Toutefois, attention : ces circuits, contrairement
+    à ceux de la section précédents, ne sont *pas* orientés. Il n'y a pas
+    d'entrée et de sorties bien définies à ce niveau, le courant se propageant
+    dans toutes les directions simultanément. Du point de vue logique, notre
+    circuit correspond à une *contrainte* sur les valeurs possibles sur les
+    fils, contrainte qui peut avoir 0, 1, ou plusieurs solutions.
+
+    On peut donc les comprendre comme des circuits où chaque fil transporte un
+    /ensemble/ de bits, c'est-à-dire un sous-ensemble de 𝔹. Ces sous-ensembles
+    sont faciles à énumerer : ∅, {0}, {1} et {0,1}. Les cas {0} et {1}
+    correspondent au sous-cas des circuits déterministes.
+
+    Supposons qu'un fil A transporte le sous-ensemble V, et un fil B transporte
+    le sous-ensemble W. Que se passe-t-il lorsqu'on connecte A et B ? On force
+    les valeurs transportées par A et B à être les mêmes, et donc les valeurs
+    transportées par A et B à être à la fois dans V et W. Autrement dit, les
+    valeurs transmises sont celles qui appartiennent à V ∩ W.
+
+    Que se passe-t-il par exemple, si l'on connecte par un fil le générateur à
+    la terre ?  Les valeurs qui circulent sont dans {0} ∩ {1} = ∅, ce qui
+    correspond logiquement à un circuit qui n'a pas de solution et, d'un point
+    de vue plus pragmatique, à un court-circuit.
+*** Les portes logiques (§4.5)
+    Voir les notes.
+** Représentation des types de données scalaires (§3)
+   Maintenant qu'on a quelque idée de comment manipuler des bits individuels, il
+   est temps de passer à la représentation des types de données scalaires, comme
+   les nombres positifs ou relatifs, les réels, les caractères.
+
+   (N.B. : ce sujet est placé avant celui des portes logiques et transistors
+   dans les notes de cours).
+*** Nombres entiers
+    Supposons qu'on souhaite représenter les entiers par $k$ bits numérotés
+    $b_{k-1} \dots b_0$.
+
+    Il existe différents codages qui se valent en théorie mais pas en
+    pratique. Pour chaque codage $X$, on définit une
+    fonction $\mathit{decode}_X$.
+**** Entiers naturels (positifs)
+     Sur $k$ bits, on représente $2^k$ valeurs, soit l'intervalle $[0, 2^k-1]$,
+     en utilisant la représentation en base 2 habituelle.
+
+     \[
+       \mathit{decode}_{\mathit{unsigned}}(b_{k-1} \dots b_0)
+       =
+       \sum_{i = 0}^{k - 1} b_i 2^i
+     \]
+
+     Cette représentation est dite *non-signée* (/unsigned/ en anglais), par
+     opposition aux représentations des entiers relatifs qui vont souvent
+     utiliser un bit de signe.
+**** Entiers relatifs
+     On a le choix de plusieurs représentations.
+***** Magnitude signée
+      Le bit de poids fort sert à indiquer le signe du nombre, le reste des bits
+      code un entier positif.
+
+      \[
+        \mathit{decode}_{\mathit{signedmagnitude}}(b_{k-1} \dots b_0)
+        = -1^{b_{k-1}} \sum_{i = 0}^{k - 2} b_i 2^i
+      \]
+
+      Problèmes : redondant (0 est encodé par $00\dots0$ et $10\dots0$),
+      difficile d'implémenter les opérations arithmétiques.
+***** Représentation biaisée
+      On compte de 1 en 1 à partir de -2ᵏ⁻¹.
+
+     \[
+       \mathit{decode}_{\mathit{biased}}(b_{k-1} \dots b_0)
+       =
+       -2^{k-1} + \sum_{i = 0}^{k - 1} b_i 2^i
+     \]
+***** Complément à 2
+      C'est la représentation utilisée en pratique, assez ingénieuse.
+
+      L'idée est de conserver la formule du cas positif, mais d'inverser le
+      signe du bit de poids fort.
+
+      \[
+        \mathit{decode}_{twoscomplement}(b_{k-1} \dots b_0)
+        = -b_{k - 1} 2^{k-1} + \sum_{i = 0}^{k - 2} b_i 2^i
+      \]
+
+      On va voir que cette représentation jouit de bonnes propriétés, ce qui
+      facilite l'implémentation des opérations arithmétiques.
+
+      Par exemple, que se passe-t-il si on additionne la représentation d'un
+      nombre et celle de son opposé /sans se soucier du bit de signe/ (comme on
+      le ferait pour des entiers non-signés) ?
+***** Récapitulatif
+      |------------------------+----------------+----------------|
+      | Nom                    | Min représenté | Max représenté |
+      |------------------------+----------------+----------------|
+      | Non signée             | $0$            | $2^k-1$        |
+      | Magnitude signée       | $-2^{k-1}+1$   | $2^{k-1}-1$    |
+      | Représentation biaisée | $-2^{k-1}$     | $2^{k-1}-1$    |
+      | Complément à 2         | $-2^{k-1}$     | $2^{k-1}-1$    |
+      |------------------------+----------------+----------------|
+
+      Exemple de codage pour k = 3.
+
+     |------+---------+------------------+------------------------+----------------|
+     | Bits | Naturel | Magnitude signée | Représentation biaisée | Complément à 2 |
+     |------+---------+------------------+------------------------+----------------|
+     |  000 |       0 |                0 |                     -4 |              0 |
+     |  001 |       1 |                1 |                     -3 |              1 |
+     |  010 |       2 |                2 |                     -2 |              2 |
+     |  011 |       3 |                3 |                     -1 |              3 |
+     |  100 |       4 |               -0 |                      0 |             -4 |
+     |  101 |       5 |               -1 |                      1 |             -3 |
+     |  110 |       6 |               -2 |                      2 |             -2 |
+     |  111 |       7 |               -3 |                      3 |             -1 |
+     |------+---------+------------------+------------------------+----------------|
+**** Opérations arithmétiques
+***** Somme d'entiers non signés
+      L'algorithme est le même que celui qu'on a appris à l'école primaire, à
+      ceci près que les chiffres sont dans $[0, 1]$ plutôt que $[0, 9]$.
+***** Opposé en complément à deux
+     Quel entier la négation bit-à-bit de $b_{k-1} \dots b_0$ code-t-elle,
+     lorsqu'on utilise la représentation en complément à deux ?
+
+     \begin{align*}
+       \mathit{decode}_{twoscomplement}(\overline{b_{k-1} \dots b_0})
+       & = -\overline{b_{k - 1}} 2^{k-1} + \sum_{i = 0}^{k - 2} \overline{b_i} 2^i
+       \\
+       & = -(1 - b_{k - 1}) 2^{k-1} + \sum_{i = 0}^{k - 2} (1 - b_i) 2^i
+       \\
+       & = -2^{k-1} + b_{k - 1} 2^{k-1} + \left(\sum_{i = 0}^{k - 2} 2^i\right) - \left(\sum_{i = 0}^{k-2} b_i 2^i\right)
+       \\
+       & = -2^{k-1} + 2^{k-1}-1 + b_{k - 1} 2^{k-1} - \left(\sum_{i = 0}^{k-2} b_i 2^i\right)
+       \\
+       & = -\mathit{decode}_{twoscomplement}(b_{k-1} \dots b_0) - 1
+     \end{align*}
+
+     On en déduit immédiatement un algorithme commode pour le calcul de l'opposé
+     sur la représentation en complément à deux.
+***** Somme d'entiers signés
+      Intérêt du complément à deux : la somme est calculée sans traiter
+      spécifiquement le bit de signe, à part pour ce qui est de la détection de
+      dépassement de capacité. Voir le tableau des notes en §3.1.4.3.3 pour
+      l'exemple de k = 3.
+
+      *Observation* : le plus petit entier qui peut résulter de l'addition de
+      $[-2^{k-1}, 0]$ avec un entier dans $[0, 2^{k-1}-1]$ est $-2^{k-1}$,
+      tandis que le plus grand est $2^{k-1}-1$. Donc, aucun dépassement de
+      capacité ne peut résulter de l'addition d'un positif et d'un négatif.
+
+      Supposons qu'on calcule la somme des bits $(a_i)_{0 \le i < n}$ et
+      $(b_j)_{0 \le j < n}$ pour obtenir les bits résultat $(s_i)_{0 \le i < n}$
+      et les bits de retenue $(c_i)_{0 \le i < n + 1}$.
+
+      |-----------+-----------+-----------+-----------+-------+---------------|
+      | $a_{k-1}$ | $b_{k-1}$ | $c_{k-1}$ | $s_{k-1}$ | $c_k$ | dépassement ? |
+      |-----------+-----------+-----------+-----------+-------+---------------|
+      |         0 |         0 |         0 |         0 |     0 | non           |
+      |         0 |         0 |         1 |         1 |     0 | oui           |
+      |-----------+-----------+-----------+-----------+-------+---------------|
+      |         0 |         1 |         0 |         1 |     0 | non           |
+      |         0 |         1 |         1 |         0 |     1 | non           |
+      |-----------+-----------+-----------+-----------+-------+---------------|
+      |         1 |         1 |         0 |         0 |     1 | oui           |
+      |         1 |         1 |         1 |         1 |     1 | non           |
+      |-----------+-----------+-----------+-----------+-------+---------------|
+
+      On constate que les cas de dépassement sont exactements ceux où $c_k \ne
+      c_{k-1}$, c'est-à-dire où~$c_k \oplus c_{k+1}$ est vrai.
+*** Nombres réels et virgule flottante (§3.3)
+    (/Cette partie n'a pas été traitée en cours mais abordée en travaux
+    dirigés/.)
+
+    Par nature, le problème du codage des nombres réels dans un nombre fini de
+    bits est plus difficile que celui des nombres entiers, puisqu'il y en a
+    strictement plus. Pire, contrairement au cas des entiers, on ne pas espérer
+    décrire exactement un intervalle de réels dans un nombre fini de bits. Se
+    poseront donc des questions épineuses de calcul d'arrondi.
+
+    Un bon compromis entre performance et précision est fourni par les formats
+    de la norme IEEE-754. On dit que ce format utilise la /virgule flottante/
+    parce que la valeur de l'exposant, qui détermine le nombre de chiffre, n'est
+    pas fixée. (Il existe d'autres formats dits à /virgule fixe/ où le nombre de
+    chiffres après la virgule est le même pour tous les nombres représentés, ce
+    qui mène en général à des opérations moins précises mais plus simples à
+    implémenter et donc populaires dans le contexte des systèmes embarqués.)
+
+    La représentation utilise trois champs de taille distincte : un champ
+    /signe/, un champ /exposant/, un champ /mantisse/ (partie fractionnaire).
+    La taillle de ces champs dépend du format de précision adopté. La norme
+    IEEE-754 en propose trois : précision /simple/, /double/ ou
+    /étendue/. Ci-dessous, la taille des champs pour la précision simple, qui
+    correspond au type /float/ en Java ou en C.
+
+    |-----------+-----------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | $b_{31}$  | $b_{30} b_{29} b_{28} b_{27} b_{26} b_{27} b_{24} b_{23}$ | $b_{22} b_{21} b_{20} b_{19} b_{18} b_{17} b_{16} b_{15} b_{14} b_{13} b_{12} b_{11} b_{10} b_{9} b_{8} b_{7} b_{6} b_{5} b_{4} b_{3} b_{2} b_{1} b_{0}$ |
+    |-----------+-----------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | 1 bit     | 8 bits                                                    | 23 bits                                                                                                                                                  |
+    |-----------+-----------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | signe $s$ | exposant $e$                                              | mantisse $m$                                                                                                                                             |
+    |-----------+-----------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | $s$       | $e_{7} e_{6} e_{5} e_{4} e_{3} e_{2} e_{1} e_{0}$         | $m_{22} m_{21} m_{20} m_{19} m_{18} m_{17} m_{16} m_{15} m_{14} m_{13} m_{12} m_{11} m_{10} m_{9} m_{8} m_{7} m_{6} m_{5} m_{4} m_{3} m_{2} m_{1} m_{0}$ |
+    |           |                                                           |                                                                                                                                                          |
+    |-----------+-----------------------------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+    \[
+       \mathit{decode}_{ieee754single}(\langle s, e, m \rangle) =
+       (-1)^s \cdot (1,m) \cdot 2^{e-127}
+       \mbox{ où } 1,m = 1 + \sum_{i = 1}^{23} m_{23-i} 2^{-i}
+       \mbox{ et } e \not\in \{ 0, 255 \}
+    \]
+
+    Les cas où l'exposant est $0$ ou $255$ correspondent à des valeurs
+    spéciales, par exemple des nombres très petits appelés /sous-normaux/, ou
+    encore $\infty$, ou encore la valeur indéfinie /Not-a-Number/ (/NaN/) qui
+    sert à propager des erreurs.
+
+    Les détails fins du format IEEE-754 dépassent le cadre du cours. Si vous
+    êtes intéressé, l'article
+    [[https://www.itu.dk/~sestoft/bachelor/IEEE754_article.pdf][_What Every
+    Computer Scientist Should Know About Floating-Point Arithmetic_]] de David
+    Goldberg fournit une introduction raisonnablement détaillée. La page
+    [[https://en.wikipedia.org/wiki/IEEE_754][IEEE-754]] de la Wikipédia
+    anglophone est aussi de bonne qualité.
+*** Interlude : représentations numériques de taille variable
+    Pour finir, une remarque importante : les représentations numériques
+    décrites précédemment sont de taille bornée, ce qui est un prérequis pour
+    une implémentation en matériel. En conséquence, elles ne peuvent décrire
+    qu'un sous-ensemble fini de ℕ ou ℝ.
+
+    En logiciel, on peut représenter une portion de ℕ ou ℝ limitée uniquement
+    par la quantité de mémoire disponible. Par exemple, la bibliothèque
+    [[https://gmplib.org][GNU MP]] propose des vrais entiers mathématiques de
+    taille arbitraire, et la bibliothèque [[https://www.mpfr.org][GNU MPFR]]
+    fait de même pour les nombres à virgule flottante.
+*** Caractères
+**** ASCII
+     Le jeu de caractère ASCII (/American Standard Code for Information
+     Interchange/) encode 128 caractères sur 7 bits. Il a été et reste très
+     répandu, mais ses origines américaines le rendent inadapté à l'informatique
+     moderne : il se restreint à l'alphabet latin, sans accents.
+**** Unicode
+     Le consortium Unicode propose une norme capable de gérer un très grand
+     nombre de caractères (149186 en septembre 2022). La norme divise le travail
+     de codage en deux aspects :
+
+     1. chaque caractère se voit assigné un entier unique compris entre 0 et
+        0x10FFFF (soit un maximum théorique de 1,114M caractères), son /point de
+        code/, indépendamment de tout codage concret ;
+
+     2. un codage concret des entiers encodant chaque caractère, qui peut être
+        plus ou moins complexe à coder/décoder.
+
+     Pour ce qui est du premier aspect, précisons qu'Unicode comprend beaucoup
+     plus que des caractères issus d'alphabets, puisqu'il contient aussi les
+     diacritiques (accents, trémas, cédilles, etc.), les caractères
+     mathématiques, les emojis, etc.
+
+     Pour ce qui est du second, citons au moins deux codages intéressants.
+
+     Le codage *UTF-32* code tout caractère sur 32 bits. Il s'agit donc d'un
+     codage coûteux mais qui a l'avantage de la simplicité et rend certaines
+     opérations efficaces, comme par exemple le calcul de la longueur d'une
+     chaîne (si l'on ignore le problème de la normalisation, voir plus bas).
+
+     Le codage *UTF-8* est un codage de longueur variable. Il est compatible
+     avec ASCII : les caractères codables en ASCII sont codés sur 1 octet en
+     UTF-8 et avec la même représentation. Les autres caractères sont codés sur
+     2 à 4 octets.
+
+     La norme Unicode est complexe. Par exemple, un même "caractère" (au sens
+     humain) peut être réalisé par la combinaison de plusieurs points de code.
+     Par exemple, le caractère ~Ç~ dispose d'un point de code dédié (0xC7), mais
+     peut aussi être réalisé par le point de code ~COMBINING CEDILLA~ (0x327)
+     précédé du point de code de ~C~ (0x43). Petite illustration en Python
+     ci-dessous :
+
+     #+BEGIN_SRC python
+>>> "\u00C7"
+Ç
+>>> "\u0043\u0327"
+Ç
+>>> "\u0043"
+C
+>>> "\u0327"
+ ̧
+     #+END_SRC
+
+     Ainsi, les séquences de points de code doivent être considérées modulo une
+     relation d'équivalence qui exprime que ~C~ suivi de ~COMBINING CEDILLA~ ne
+     doit pas être distingué de ~Ç~. Pour cette raison, la norme Unicode décrit
+     un algorithme de normalisation qui calcule pour toute séquence de points de
+     code une autre séquence, sa /forme normale/. Cet algorithme vérifie des
+     propriétés très classiques ; en écrivant $\equiv$ pour l'équivalence et
+     $\mathit{nf}$ pour l'algorithme de normalisation, on a que
+
+     1. toute séquence est équivalente à sa forme normale ($s \equiv
+        \mathit{nf}(s)$),
+
+     2. deux séquences équivalentes ont la même forme normale ($s_1 \equiv _2
+        \Rightarrow \mathit{nf}(s_1) = \mathit{nf}(s_2)$),
+
+     3. la normalisation est idempotente, une forme normale est sa propre forme
+        normale ($\mathit{nf}(\mathit{nf}(s)) = \mathit{nf}(s)$).
+
+     Le fragment de code Python montre un exemple de normalisation unicode. On
+     doit spécifier la notion exacte de forme normale à utiliser, car la norme
+     en propose plusieurs (ici /Normal Form Canonical Composition/ ou /NFC/, qui
+     recompose les combinaisons de caractère).
+
+     #+BEGIN_SRC python
+>>> len("\u0043\u0327")
+2
+>>> from unicodedata import normalize
+>>> normalize("NFC", "\u0043\u0327")
+'Ç'
+>>> len(normalize("NFC", "\u0043\u0327"))
+1
+     #+END_SRC

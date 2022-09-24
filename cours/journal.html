@@ -1,0 +1,1473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+<!-- 2022-09-24 Sat 11:42 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Circuits et architecture 2022/2023 &#x2013; Journal du cours</title>
+<meta name="author" content="Adrien Guatto" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Circuits et architecture 2022/2023 &#x2013; Journal du cours</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table des matières</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org1b3f654">1. Cours 1 <span class="timestamp-wrapper"><span class="timestamp">&lt;2022-09-16 Fri&gt;</span></span></a>
+<ul>
+<li><a href="#org4f0aabd">1.1. Introduction</a>
+<ul>
+<li><a href="#org75e0ca8">1.1.1. Supports et organisation</a></li>
+</ul>
+</li>
+<li><a href="#org34e9e70">1.2. Le cours</a>
+<ul>
+<li><a href="#org5e2d24e">1.2.1. Historique général (§2.1)</a></li>
+<li><a href="#orgac3b79c">1.2.2. Les portes logiques</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org26e24f8">2. Cours 2 <span class="timestamp-wrapper"><span class="timestamp">&lt;2022-09-23 Fri&gt;</span></span></a>
+<ul>
+<li><a href="#orgc8ad938">2.1. Des transistors aux portes logiques (§4)</a>
+<ul>
+<li><a href="#org9220a0d">2.1.1. Introduction</a></li>
+<li><a href="#org09fd08b">2.1.2. Semi-conducteurs, diodes et transistors</a></li>
+<li><a href="#org0c48d2d">2.1.3. Les portes logiques (§4.5)</a></li>
+</ul>
+</li>
+<li><a href="#orgdc5b005">2.2. Représentation des types de données scalaires (§3)</a>
+<ul>
+<li><a href="#org314c8ce">2.2.1. Nombres entiers</a></li>
+<li><a href="#orgbd3ca72">2.2.2. Nombres réels et virgule flottante (§3.3)</a></li>
+<li><a href="#orga5ab621">2.2.3. Interlude : représentations numériques de taille variable</a></li>
+<li><a href="#orgb518e0c">2.2.4. Caractères</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org1b3f654" class="outline-2">
+<h2 id="org1b3f654"><span class="section-number-2">1.</span> Cours 1 <span class="timestamp-wrapper"><span class="timestamp">&lt;2022-09-16 Fri&gt;</span></span></h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org4f0aabd" class="outline-3">
+<h3 id="org4f0aabd"><span class="section-number-3">1.1.</span> Introduction</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+Bienvenue dans le cours <span class="underline">Circuits et architecture</span> !
+</p>
+
+<p>
+Les années précédentes, vous avez utilisé des outils et concepts comme des
+boîtes noires, sans forcément comprendre leur fonctionnement interne. Par
+exemple, vous avez programmé en C sans que l'on vous explique comment ce
+langage était implémenté exactement. Durant vos deux prochaines années
+d'études, vous allez ouvrir ces boîtes noires, et découvrir comment elles
+fonctionnent sous le capot.
+</p>
+
+<p>
+En l'occurence, l'objectif du cours <span class="underline">Circuit et architecture</span> est d'expliquer
+le fonctionnement des machines à calculer programmables appelées
+<i>ordinateurs</i>. Le cours débute des couches matérielles très basses jusqu'à
+remonter au niveau du langage C.
+</p>
+</div>
+<div id="outline-container-org75e0ca8" class="outline-4">
+<h4 id="org75e0ca8"><span class="section-number-4">1.1.1.</span> Supports et organisation</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+Tous les documents (support, projet, feuilles de TD, etc.) sont disponibles
+sur le dépôt Git du module.
+</p>
+
+<p>
+<a href="https://gaufre.informatique.univ-paris-diderot.fr/aguatto/architecture-m1-22-23">https://gaufre.informatique.univ-paris-diderot.fr/aguatto/architecture-m1-22-23</a>
+</p>
+
+<p>
+Il contient notamment un résumé (syllabus) du module, qui résume toutes les
+informations pratiques du cours et propose un plan des sujets traités séance
+par séance. Prenons le temps de le lire ensemble.
+</p>
+
+<p>
+Comme écrit dans le syllabus, l'enseignement reprend pour l'essentiel le
+contenu du cours dispensé par M. Carton les années précédentes. Il s'appuie
+en particulier sur le support de cours rédigé par ce dernier :
+</p>
+
+<p>
+<a href="https://www.irif.fr/~carton/Enseignement/Architecture/archi.pdf">https://www.irif.fr/~carton/Enseignement/Architecture/archi.pdf</a>
+</p>
+
+<p>
+(Il existe aussi au format HTML, voir la page de M. Carton.)
+</p>
+
+<p>
+Le dépôt Git du cours contient également un journal (que vous êtes en train
+de lire !) qui résume succinctement les points traités en cours chaque
+semaine. La notation §X.Y fera référence à la section X des notes de
+M. Carton. Le journal sera plus détaillé lorsque le cours s'éloignera un peu
+des dites notes.
+</p>
+
+<p>
+<b>Attention</b> : la lecture des notes de M. Carton et du journal ne remplace
+pas la présence en cours. Les notes contiennent à la fois plus et moins
+d'information que les cours magistraux. Elles sont là pour vous permettre de
+vous concentrer sur une prise de notes <i>active</i>, et en particulier vous
+évite d'avoir à recopier les schémas dessinés au tableau.
+</p>
+
+<p>
+Autre remarque : le cours ne contient aucun concept vraiment difficile. En
+revanche, on va manipuler beaucoup de <i>niveaux d'abstraction</i> différents,
+des portes logiques jusqu'à des questions de programmation système. La
+principale difficulté est de comprendre l'articulation de ces niveaux, qui
+sera nécessaire pour réaliser le projet !
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org34e9e70" class="outline-3">
+<h3 id="org34e9e70"><span class="section-number-3">1.2.</span> Le cours</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org5e2d24e" class="outline-4">
+<h4 id="org5e2d24e"><span class="section-number-4">1.2.1.</span> Historique général (§2.1)</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+Une histoire des machines à calculer, concept très ancien.
+</p>
+
+<p>
+Dès le début, le développement des machines à calculer est motivé par des
+besoins concrets, commerciaux et administratifs puis militaires (XXème).
+</p>
+
+<p>
+Les progrès théoriques (Boole, Turing, Gödel, Church) sont parallèles aux
+progrès pratiques mais ne les rencontrent que tardivement (1950+). En
+particulier, si les contributions théoriques d'Alan Turing sont immenses, et
+ses contributions pratiques grandes, on ne peut pas dire qu'il a inventé
+l'ordinateur (= programmable) comme on l'entend parfois.
+</p>
+
+<p>
+Une histoire des processeurs passe nécessairement par une histoire des
+compagnies qui fabriquent les processeurs. L'architecture des ordinateurs
+est dominée par l'industrie et le domaine militaire (supercalculateurs).
+</p>
+
+<p>
+Une sélection biaisée vers x86 de quelques microprocesseurs :
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Année</th>
+<th scope="col" class="org-right">Nom</th>
+<th scope="col" class="org-left">Fabricant</th>
+<th scope="col" class="org-left">Mot</th>
+<th scope="col" class="org-left">Freq.</th>
+<th scope="col" class="org-left">Trans.</th>
+<th scope="col" class="org-left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1971</td>
+<td class="org-right">4004</td>
+<td class="org-left">Intel</td>
+<td class="org-left">4 bits</td>
+<td class="org-left">108 KHz</td>
+<td class="org-left">2,3K</td>
+<td class="org-left">1er μ-proc</td>
+</tr>
+
+<tr>
+<td class="org-right">1972</td>
+<td class="org-right">8008</td>
+<td class="org-left">Intel</td>
+<td class="org-left">8 bits</td>
+<td class="org-left">200 KHz</td>
+<td class="org-left">3,5K</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">1978</td>
+<td class="org-right">8086</td>
+<td class="org-left">Intel</td>
+<td class="org-left">16 bits</td>
+<td class="org-left">5 MHz</td>
+<td class="org-left">29K</td>
+<td class="org-left">1er x86</td>
+</tr>
+
+<tr>
+<td class="org-right">1985</td>
+<td class="org-right">80386</td>
+<td class="org-left">Intel</td>
+<td class="org-left">32 bits</td>
+<td class="org-left">12 MHz</td>
+<td class="org-left">275K</td>
+<td class="org-left">1er x86-32</td>
+</tr>
+
+<tr>
+<td class="org-right">1995</td>
+<td class="org-right">Pentium</td>
+<td class="org-left">Intel</td>
+<td class="org-left">32 bits</td>
+<td class="org-left">60 MHz</td>
+<td class="org-left">3,1M</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">2003</td>
+<td class="org-right">Opteron</td>
+<td class="org-left">AMD</td>
+<td class="org-left">64 bits</td>
+<td class="org-left">1,4 GHz</td>
+<td class="org-left">106M</td>
+<td class="org-left">1er x86-64</td>
+</tr>
+
+<tr>
+<td class="org-right">2022</td>
+<td class="org-right">M1 Ultra</td>
+<td class="org-left">Apple</td>
+<td class="org-left">64 bits</td>
+<td class="org-left">3,2 GHz</td>
+<td class="org-left">114G</td>
+<td class="org-left">ARM, 20c</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Beaucoup d'autres choses à l'époque et depuis 2003 : essor puis déclin des
+architectures RISC ; récemment essor de puissants concurrents à x86-64 (ARM,
+Nvidia) ; nouveaux segments (mobiles) ; optimisation de la consommation
+énergétique ; l'embarqué devient dominant en volume dans les années 1990
+(x86 y est inexistant).
+</p>
+</div>
+</div>
+<div id="outline-container-orgac3b79c" class="outline-4">
+<h4 id="orgac3b79c"><span class="section-number-4">1.2.2.</span> Les portes logiques</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+Après ces quelques éléments de contexte, rentrons dans le vif du sujet :
+construire un ordinateur numérique programmable. On va adopter une démarche
+ascendante (ou <i>bottom-up</i>) : on commence avec le niveau d'abstraction le
+plus bas, puis on remonte vers le logiciel.
+</p>
+
+<p>
+(À nuancer : il y a presque toujours plus bas, à moins de descendre à une
+description quantique de la matière subatomique. Ce ne sera évidemment pas
+le propos du cours.)
+</p>
+
+<p>
+Il faut dejà nous demander ce que veut dire "numérique". De quels nombres
+parle-t-on ? Vous connaissez déjà différents systèmes de nombres.
+</p>
+
+<p>
+ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ ⊆ ℂ (⊆ &#x2026; ?)
+</p>
+
+<p>
+Certains de ces ensembles sont de même cardinal ("taille"), comme ℕ, ℤ ou
+ℚ qui sont de même cardinal strictement plus petit que celui de ℝ et ℂ. On
+va commencer avec un ensemble de "nombres" de cardinal fini : les
+booléens.
+</p>
+
+<p>
+Ce sera notre niveau d'abstraction de base : la numération booléenne, bâtie
+sur l'ensemble 𝔹 = { 0, 1 }. C'est un système de nombre un peu étrange, mais
+qui a l'avantage de pouvoir aussi être vu sous un angle logique.
+</p>
+
+<p>
+En effet, les opérateurs logique NOT, AND, OR, XOR, NOR, NAND peuvent aussi
+être compris comme des opérateurs arithmétiques. Pour cette raison, on note
+· pour AND et + pour OR. L'analogie avec l'arithmétique est moins claire
+pour NOT et XOR, et les notations sont donc moins fixées : pour NOT on
+utilisera le symbole ¬ ou la barre de surlignement, pour XOR le symbole ⊕.
+</p>
+
+<p>
+Ces opérateurs sont des fonctions <i>booléennes</i>, de la forme 𝔹ⁿ → 𝔹.
+</p>
+
+<p>
+On rappelle qu'une fonction mathématique f : X → Y est défini comme un
+ensemble de couples (a, b) ∈ X × Y tel que pour tout a ∈ X, il existe un
+unique b ∈ Y tel que (a, b) ∈ f. Si X et Y sont infinis, f l'est aussi, mais
+dans le cas des fonctions booléennes X = 𝔹ⁿ qui est fini (de cardinal 2ⁿ) et
+Y = 𝔹 (de cardinal 2) également, donc on peut représenter la fonction comme
+l'ensemble fini des couples entrées/sortie. C'est sa <i>table de vérité</i>.
+</p>
+
+<p>
+<b>Q</b> : donner les tables de vérité de NOT, AND, OR, XOR, NOR, NAND.
+</p>
+
+<p>
+(On peut remarquer que comme 1 + 1 = 1, si on souhaite voir les booléens
+comme des nombres, on peut éventuellement penser à "0" comme dénombrant
+"zéro éléments" et à "1" comme dénombrant "beaucoup d'éléments".)
+</p>
+
+<p>
+Il est facile de vérifier que les opérateurs vérifient certaines lois
+algébriques (découvertes par MM. Boole et de Morgan) : la négation est
+involutive, le NOT distribue et transforme AND/OR en OR/AND, etc, AND et OR
+sont idempotents, etc.
+</p>
+
+<p>
+Il est clair que certaines de ces portes peuvent être exprimées à partir des
+autres. Littéralement, on a NAND = NOT AND, NOR = NOT OR. Et les autres ?
+</p>
+
+<p>
+<b>Q</b> : comment exprimer XOR à partir de NOT, AND, OR ?
+</p>
+
+<p>
+<b>R</b> : XOR(a, b) = (a OR b) AND NOT (A AND B) = (a + b) · ¬ab = a
+</p>
+
+<p>
+<b>Q</b> : connaissez-vous un autre opérateur logique que ceux de la liste ?
+</p>
+
+<p>
+<b>A</b> : l'implication a ⇒ b = OR(NOT(A), B).
+</p>
+
+<p>
+Ces opérateurs booléens peuvent également être vu comme des portes dans
+circuits où chaque fil transporte un bit. Ces circuits sont orientés, au
+sens où les fils transportent les bits dans une direction bien définie.
+On peut voir les lois booléennes comme des transformations de circuits.
+Voir les notes pour les notations, que vous connaissez sûrement déjà.
+</p>
+
+<p>
+<b>Q</b> : montrer que NAND est un opérateur <i>universel</i>, capable d'exprimer tous
+les autres.
+</p>
+
+<p>
+<b>A</b> : NOT(a) = NAND(a, a), OR(a, b) = NAND(NOT(a), NOT(b)), AND s'exprime
+avec NOT et OR par de Morgan, XOR et NOR s'expriment en fonction de NOT, OR
+et AND.
+</p>
+
+<p>
+<b>Q</b>, à faire chez vous : même question pour le NOR.
+</p>
+
+<p>
+On a donc notre jeu de portes logiques élémentaires, qui (si on le souhaite)
+peut être réduit au NOR ou bien au NAND. Mais quid des fonctions booléennes
+en général ? Étant donnée une fonction / table de vérité quelconque, peut-on
+l'exprimer avec les portes précédentes ? La réponse est oui. Voyons une
+méthode très simple, en commençant par poser le problème.
+</p>
+
+<p>
+Soit f : 𝔹ⁿ → 𝔹.
+</p>
+
+<p>
+On veut coder cette fonction par une formule booléenne sur n variables x₁,
+&#x2026;, xₙ telle que, pour tout (a₁, &#x2026;, aₙ) ∈ 𝔹ⁿ, la valeur de vérité de la
+formule où l'on a remplacé xᵢ par aᵢ est égale à f(a₁, &#x2026;, aₙ).
+</p>
+
+<p>
+Considérons l'ensemble dom(f) ⊆ 𝔹ⁿ des n-uplets de bits a tel que f(a)
+= 1. Chaque n-uplet (a₁, &#x2026;, aₙ) peut être décrit par une conjonction de n
+<i>atomes</i>, où un atome est une variable propositionnelle ou sa négation. Le
+i-ème atome est xᵢ si aᵢ = 1, ¬xᵢ si aᵢ = 0.  La formule obtenue en prenant
+la disjonction de toutes ces conjonctions a bien la propriété recherchée.
+</p>
+
+<p>
+Donc toute fonction booléenne s'écrit comme une disjonction de conjonction
+d'atomes, i.e., en <i>forme normale disjonctive</i> (FND). De plus, cette forme
+normale fournit une caractérisation unique (f = g ssi FND(f) = FND(g)), pour
+un ordre d'énumération des entrées fixé.
+</p>
+
+<p>
+<b>Attention</b> : la méthode décrite n'est pas une bonne méthode en pratique.
+L'expression est énorme en général, par exemple si on donne la fonction
+constante 1, on a une disjonction de 2ⁿ conjonctions, chacune de celle-ci
+comprenant n atomes. On verra des méthodes plus efficaces en TD, comme celle
+des tableaux de Karnaugh.
+</p>
+
+<p>
+La semaine prochaine, on verra comment réaliser physiquement les portes
+logiques en termes de transistors.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-org26e24f8" class="outline-2">
+<h2 id="org26e24f8"><span class="section-number-2">2.</span> Cours 2 <span class="timestamp-wrapper"><span class="timestamp">&lt;2022-09-23 Fri&gt;</span></span></h2>
+<div class="outline-text-2" id="text-2">
+</div>
+<div id="outline-container-orgc8ad938" class="outline-3">
+<h3 id="orgc8ad938"><span class="section-number-3">2.1.</span> Des transistors aux portes logiques (§4)</h3>
+<div class="outline-text-3" id="text-2-1">
+</div>
+<div id="outline-container-org9220a0d" class="outline-4">
+<h4 id="org9220a0d"><span class="section-number-4">2.1.1.</span> Introduction</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+C'est à partir des portes logiques et fonctions booléennes qu'on va
+construire le reste de l'informatique. Toutefois, les portes logiques sont
+des objets idéaux qu'il va falloir réaliser physiquement pour s'en servir.
+Il va donc falloir parler un peu de physique et d'électronique.
+</p>
+
+<p>
+L'idée est d'expliquer le fonctionnement du <i>transistor</i>, brique de base
+des circuits intégrés (formés de millions voire milliards d'entre eux
+!). Comme la physique-chimie dépasse largement le cadre du cours, on va en
+donner une vision simplifiée et toujours très idéalisée.
+</p>
+</div>
+</div>
+<div id="outline-container-org09fd08b" class="outline-4">
+<h4 id="org09fd08b"><span class="section-number-4">2.1.2.</span> Semi-conducteurs, diodes et transistors</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+(Les notes de cours contiennent beaucoup plus de détails sur les aspects
+physiques et chimiques de cette partie du cours, et Wikipédia encore plus.)
+</p>
+
+<p>
+Un semi-conducteur est un matériau dont la conductivité électrique est
+située entre celle des isolants et celle des métaux. On peut le traiter
+chimiquement (<i>dopage</i>) pour modifier ses propriétés, et obtenir un
+semi-conducteur de type <i>n</i>, qui a des électrons en trop, ou un
+semi-conducteur de type <i>p</i>, qui a des électrons manquants, des
+"trous".
+</p>
+
+<p>
+En branchant un semi-conducteur p et un n, on obtient une diode, qui ne
+laisse passer le courant que dans un seul sens. En appliquant une tension à
+l'anode et à la cathode d'une diode, on peut la rendre conductrice ou
+non-conductrice. Cela rend la diode contrôlable par un signal extérieur.
+</p>
+
+<p>
+Les transistors généralisent le fonctionnement de la diode. Ils sont eux
+aussi de deux types, <i>p</i> et <i>n</i>. Les deux types de transistors ont trois
+pates, nommées "grille", "source" et "drain". Leur comportement, pour
+ce qui nous intéresse, est simplement celui d'un interrupteur, et on peut en
+donner une description abstraite.
+</p>
+
+<p>
+Dans un transistor de type <i>n</i>, lorsque la grille reçoit une tension de
+2,9V, l'interrupteur est fermé et source et drains sont connectés (source =
+drain, le transistor agit comme un fil). Si la grille ne reçoit pas de
+tension (0V), l'interrupteur est ouvert et il n'y a aucun lien entre source
+et drain. Les transistors <i>p</i> agissent de façon symétrique, connectant
+source et drain lorsque la tension de la grille est 0V, et la fermant à 0V.
+</p>
+
+<p>
+(Le comportement complémentaire des transistors <i>n</i> et <i>p</i> explique le nom
+donné aux circuits qui en sont composés : <i>Complementary Metal-Oxyde
+Semiconductors</i>, ou CMOS.)
+</p>
+
+<p>
+On peut donc comprendre le comportement des transistors de façon purement
+logique. La tension 2,9V correspond au booléen 1, et 0V au booléen 0. Le
+transistor <i>n</i> peut être décrit par la formule
+</p>
+
+<p>
+grille ⇒ (source = drain)
+</p>
+
+<p>
+et le transistor <i>p</i> par la formule
+</p>
+
+<p>
+¬grille ⇒ (source = drain).
+</p>
+
+<p>
+où "source = drain" est OR(AND(drain, source), AND(¬drain,¬source)).).
+</p>
+
+<p>
+On peut donc donner un sens purement logique, extra-physique, aux circuits
+composés de transistors. Toutefois, attention : ces circuits, contrairement
+à ceux de la section précédents, ne sont <b>pas</b> orientés. Il n'y a pas
+d'entrée et de sorties bien définies à ce niveau, le courant se propageant
+dans toutes les directions simultanément. Du point de vue logique, notre
+circuit correspond à une <b>contrainte</b> sur les valeurs possibles sur les
+fils, contrainte qui peut avoir 0, 1, ou plusieurs solutions.
+</p>
+
+<p>
+On peut donc les comprendre comme des circuits où chaque fil transporte un
+<i>ensemble</i> de bits, c'est-à-dire un sous-ensemble de 𝔹. Ces sous-ensembles
+sont faciles à énumerer : ∅, {0}, {1} et {0,1}. Les cas {0} et {1}
+correspondent au sous-cas des circuits déterministes.
+</p>
+
+<p>
+Supposons qu'un fil A transporte le sous-ensemble V, et un fil B transporte
+le sous-ensemble W. Que se passe-t-il lorsqu'on connecte A et B ? On force
+les valeurs transportées par A et B à être les mêmes, et donc les valeurs
+transportées par A et B à être à la fois dans V et W. Autrement dit, les
+valeurs transmises sont celles qui appartiennent à V ∩ W.
+</p>
+
+<p>
+Que se passe-t-il par exemple, si l'on connecte par un fil le générateur à
+la terre ?  Les valeurs qui circulent sont dans {0} ∩ {1} = ∅, ce qui
+correspond logiquement à un circuit qui n'a pas de solution et, d'un point
+de vue plus pragmatique, à un court-circuit.
+</p>
+</div>
+</div>
+<div id="outline-container-org0c48d2d" class="outline-4">
+<h4 id="org0c48d2d"><span class="section-number-4">2.1.3.</span> Les portes logiques (§4.5)</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+Voir les notes.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgdc5b005" class="outline-3">
+<h3 id="orgdc5b005"><span class="section-number-3">2.2.</span> Représentation des types de données scalaires (§3)</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Maintenant qu'on a quelque idée de comment manipuler des bits individuels, il
+est temps de passer à la représentation des types de données scalaires, comme
+les nombres positifs ou relatifs, les réels, les caractères.
+</p>
+
+<p>
+(N.B. : ce sujet est placé avant celui des portes logiques et transistors
+dans les notes de cours).
+</p>
+</div>
+<div id="outline-container-org314c8ce" class="outline-4">
+<h4 id="org314c8ce"><span class="section-number-4">2.2.1.</span> Nombres entiers</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+Supposons qu'on souhaite représenter les entiers par \(k\) bits numérotés
+\(b_{k-1} \dots b_0\).
+</p>
+
+<p>
+Il existe différents codages qui se valent en théorie mais pas en
+pratique. Pour chaque codage \(X\), on définit une
+fonction \(\mathit{decode}_X\).
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="org783a779"></a>Entiers naturels (positifs)<br />
+<div class="outline-text-5" id="text-2-2-1-1">
+<p>
+Sur \(k\) bits, on représente \(2^k\) valeurs, soit l'intervalle \([0, 2^k-1]\),
+en utilisant la représentation en base 2 habituelle.
+</p>
+
+<p>
+\[
+       \mathit{decode}_{\mathit{unsigned}}(b_{k-1} \dots b_0)
+       =
+       \sum_{i = 0}^{k - 1} b_i 2^i
+     \]
+</p>
+
+<p>
+Cette représentation est dite <b>non-signée</b> (<i>unsigned</i> en anglais), par
+opposition aux représentations des entiers relatifs qui vont souvent
+utiliser un bit de signe.
+</p>
+</div>
+</li>
+<li><a id="org63922da"></a>Entiers relatifs<br />
+<div class="outline-text-5" id="text-2-2-1-2">
+<p>
+On a le choix de plusieurs représentations.
+</p>
+</div>
+<ol class="org-ol">
+<li><a id="orgb8231af"></a>Magnitude signée<br />
+<div class="outline-text-6" id="text-2-2-1-2-1">
+<p>
+Le bit de poids fort sert à indiquer le signe du nombre, le reste des bits
+code un entier positif.
+</p>
+
+<p>
+\[
+        \mathit{decode}_{\mathit{signedmagnitude}}(b_{k-1} \dots b_0)
+        = -1^{b_{k-1}} \sum_{i = 0}^{k - 2} b_i 2^i
+      \]
+</p>
+
+<p>
+Problèmes : redondant (0 est encodé par \(00\dots0\) et \(10\dots0\)),
+difficile d'implémenter les opérations arithmétiques.
+</p>
+</div>
+</li>
+<li><a id="orgaaa2347"></a>Représentation biaisée<br />
+<div class="outline-text-6" id="text-2-2-1-2-2">
+<p>
+On compte de 1 en 1 à partir de -2ᵏ⁻¹.
+</p>
+
+<p>
+\[
+       \mathit{decode}_{\mathit{biased}}(b_{k-1} \dots b_0)
+       =
+       -2^{k-1} + \sum_{i = 0}^{k - 1} b_i 2^i
+     \]
+</p>
+</div>
+</li>
+<li><a id="orgcf92348"></a>Complément à 2<br />
+<div class="outline-text-6" id="text-2-2-1-2-3">
+<p>
+C'est la représentation utilisée en pratique, assez ingénieuse.
+</p>
+
+<p>
+L'idée est de conserver la formule du cas positif, mais d'inverser le
+signe du bit de poids fort.
+</p>
+
+<p>
+\[
+        \mathit{decode}_{twoscomplement}(b_{k-1} \dots b_0)
+        = -b_{k - 1} 2^{k-1} + \sum_{i = 0}^{k - 2} b_i 2^i
+      \]
+</p>
+
+<p>
+On va voir que cette représentation jouit de bonnes propriétés, ce qui
+facilite l'implémentation des opérations arithmétiques.
+</p>
+
+<p>
+Par exemple, que se passe-t-il si on additionne la représentation d'un
+nombre et celle de son opposé <i>sans se soucier du bit de signe</i> (comme on
+le ferait pour des entiers non-signés) ?
+</p>
+</div>
+</li>
+<li><a id="orgb1f1539"></a>Récapitulatif<br />
+<div class="outline-text-6" id="text-2-2-1-2-4">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Nom</th>
+<th scope="col" class="org-left">Min représenté</th>
+<th scope="col" class="org-left">Max représenté</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Non signée</td>
+<td class="org-left">\(0\)</td>
+<td class="org-left">\(2^k-1\)</td>
+</tr>
+
+<tr>
+<td class="org-left">Magnitude signée</td>
+<td class="org-left">\(-2^{k-1}+1\)</td>
+<td class="org-left">\(2^{k-1}-1\)</td>
+</tr>
+
+<tr>
+<td class="org-left">Représentation biaisée</td>
+<td class="org-left">\(-2^{k-1}\)</td>
+<td class="org-left">\(2^{k-1}-1\)</td>
+</tr>
+
+<tr>
+<td class="org-left">Complément à 2</td>
+<td class="org-left">\(-2^{k-1}\)</td>
+<td class="org-left">\(2^{k-1}-1\)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Exemple de codage pour k = 3.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Bits</th>
+<th scope="col" class="org-right">Naturel</th>
+<th scope="col" class="org-right">Magnitude signée</th>
+<th scope="col" class="org-right">Représentation biaisée</th>
+<th scope="col" class="org-right">Complément à 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">000</td>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">-4</td>
+<td class="org-right">0</td>
+</tr>
+
+<tr>
+<td class="org-right">001</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">-3</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">010</td>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+<td class="org-right">-2</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">011</td>
+<td class="org-right">3</td>
+<td class="org-right">3</td>
+<td class="org-right">-1</td>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">100</td>
+<td class="org-right">4</td>
+<td class="org-right">-0</td>
+<td class="org-right">0</td>
+<td class="org-right">-4</td>
+</tr>
+
+<tr>
+<td class="org-right">101</td>
+<td class="org-right">5</td>
+<td class="org-right">-1</td>
+<td class="org-right">1</td>
+<td class="org-right">-3</td>
+</tr>
+
+<tr>
+<td class="org-right">110</td>
+<td class="org-right">6</td>
+<td class="org-right">-2</td>
+<td class="org-right">2</td>
+<td class="org-right">-2</td>
+</tr>
+
+<tr>
+<td class="org-right">111</td>
+<td class="org-right">7</td>
+<td class="org-right">-3</td>
+<td class="org-right">3</td>
+<td class="org-right">-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ol>
+</li>
+<li><a id="orgd780871"></a>Opérations arithmétiques<br />
+<ol class="org-ol">
+<li><a id="org9b75c46"></a>Somme d'entiers non signés<br />
+<div class="outline-text-6" id="text-2-2-1-3-1">
+<p>
+L'algorithme est le même que celui qu'on a appris à l'école primaire, à
+ceci près que les chiffres sont dans \([0, 1]\) plutôt que \([0, 9]\).
+</p>
+</div>
+</li>
+<li><a id="orgdf8a4d2"></a>Opposé en complément à deux<br />
+<div class="outline-text-6" id="text-2-2-1-3-2">
+<p>
+Quel entier la négation bit-à-bit de \(b_{k-1} \dots b_0\) code-t-elle,
+lorsqu'on utilise la représentation en complément à deux ?
+</p>
+
+\begin{align*}
+  \mathit{decode}_{twoscomplement}(\overline{b_{k-1} \dots b_0})
+  & = -\overline{b_{k - 1}} 2^{k-1} + \sum_{i = 0}^{k - 2} \overline{b_i} 2^i
+  \\
+  & = -(1 - b_{k - 1}) 2^{k-1} + \sum_{i = 0}^{k - 2} (1 - b_i) 2^i
+  \\
+  & = -2^{k-1} + b_{k - 1} 2^{k-1} + \left(\sum_{i = 0}^{k - 2} 2^i\right) - \left(\sum_{i = 0}^{k-2} b_i 2^i\right)
+  \\
+  & = -2^{k-1} + 2^{k-1}-1 + b_{k - 1} 2^{k-1} - \left(\sum_{i = 0}^{k-2} b_i 2^i\right)
+  \\
+  & = -\mathit{decode}_{twoscomplement}(b_{k-1} \dots b_0) - 1
+\end{align*}
+
+<p>
+On en déduit immédiatement un algorithme commode pour le calcul de l'opposé
+sur la représentation en complément à deux.
+</p>
+</div>
+</li>
+<li><a id="org7fad144"></a>Somme d'entiers signés<br />
+<div class="outline-text-6" id="text-2-2-1-3-3">
+<p>
+Intérêt du complément à deux : la somme est calculée sans traiter
+spécifiquement le bit de signe, à part pour ce qui est de la détection de
+dépassement de capacité. Voir le tableau des notes en §3.1.4.3.3 pour
+l'exemple de k = 3.
+</p>
+
+<p>
+<b>Observation</b> : le plus petit entier qui peut résulter de l'addition de
+\([-2^{k-1}, 0]\) avec un entier dans \([0, 2^{k-1}-1]\) est \(-2^{k-1}\),
+tandis que le plus grand est \(2^{k-1}-1\). Donc, aucun dépassement de
+capacité ne peut résulter de l'addition d'un positif et d'un négatif.
+</p>
+
+<p>
+Supposons qu'on calcule la somme des bits \((a_i)_{0 \le i < n}\) et
+\((b_j)_{0 \le j < n}\) pour obtenir les bits résultat \((s_i)_{0 \le i < n}\)
+et les bits de retenue \((c_i)_{0 \le i < n + 1}\).
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">\(a_{k-1}\)</th>
+<th scope="col" class="org-right">\(b_{k-1}\)</th>
+<th scope="col" class="org-right">\(c_{k-1}\)</th>
+<th scope="col" class="org-right">\(s_{k-1}\)</th>
+<th scope="col" class="org-right">\(c_k\)</th>
+<th scope="col" class="org-left">dépassement ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-left">non</td>
+</tr>
+
+<tr>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">0</td>
+<td class="org-left">oui</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-right">0</td>
+<td class="org-left">non</td>
+</tr>
+
+<tr>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-left">non</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">0</td>
+<td class="org-right">0</td>
+<td class="org-right">1</td>
+<td class="org-left">oui</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+<td class="org-left">non</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+On constate que les cas de dépassement sont exactements ceux où \(c_k \ne
+      c_{k-1}\), c'est-à-dire où~\(c_k \oplus c_{k+1}\) est vrai.
+</p>
+</div>
+</li>
+</ol>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgbd3ca72" class="outline-4">
+<h4 id="orgbd3ca72"><span class="section-number-4">2.2.2.</span> Nombres réels et virgule flottante (§3.3)</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+(<i>Cette partie n'a pas été traitée en cours mais abordée en travaux
+dirigés</i>.)
+</p>
+
+<p>
+Par nature, le problème du codage des nombres réels dans un nombre fini de
+bits est plus difficile que celui des nombres entiers, puisqu'il y en a
+strictement plus. Pire, contrairement au cas des entiers, on ne pas espérer
+décrire exactement un intervalle de réels dans un nombre fini de bits. Se
+poseront donc des questions épineuses de calcul d'arrondi.
+</p>
+
+<p>
+Un bon compromis entre performance et précision est fourni par les formats
+de la norme IEEE-754. On dit que ce format utilise la <i>virgule flottante</i>
+parce que la valeur de l'exposant, qui détermine le nombre de chiffre, n'est
+pas fixée. (Il existe d'autres formats dits à <i>virgule fixe</i> où le nombre de
+chiffres après la virgule est le même pour tous les nombres représentés, ce
+qui mène en général à des opérations moins précises mais plus simples à
+implémenter et donc populaires dans le contexte des systèmes embarqués.)
+</p>
+
+<p>
+La représentation utilise trois champs de taille distincte : un champ
+<i>signe</i>, un champ <i>exposant</i>, un champ <i>mantisse</i> (partie fractionnaire).
+La taillle de ces champs dépend du format de précision adopté. La norme
+IEEE-754 en propose trois : précision <i>simple</i>, <i>double</i> ou
+<i>étendue</i>. Ci-dessous, la taille des champs pour la précision simple, qui
+correspond au type <i>float</i> en Java ou en C.
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">\(b_{31}\)</th>
+<th scope="col" class="org-left">\(b_{30} b_{29} b_{28} b_{27} b_{26} b_{27} b_{24} b_{23}\)</th>
+<th scope="col" class="org-left">\(b_{22} b_{21} b_{20} b_{19} b_{18} b_{17} b_{16} b_{15} b_{14} b_{13} b_{12} b_{11} b_{10} b_{9} b_{8} b_{7} b_{6} b_{5} b_{4} b_{3} b_{2} b_{1} b_{0}\)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">1 bit</td>
+<td class="org-left">8 bits</td>
+<td class="org-left">23 bits</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">signe \(s\)</td>
+<td class="org-left">exposant \(e\)</td>
+<td class="org-left">mantisse \(m\)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-left">\(s\)</td>
+<td class="org-left">\(e_{7} e_{6} e_{5} e_{4} e_{3} e_{2} e_{1} e_{0}\)</td>
+<td class="org-left">\(m_{22} m_{21} m_{20} m_{19} m_{18} m_{17} m_{16} m_{15} m_{14} m_{13} m_{12} m_{11} m_{10} m_{9} m_{8} m_{7} m_{6} m_{5} m_{4} m_{3} m_{2} m_{1} m_{0}\)</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+\[
+       \mathit{decode}_{ieee754single}(\langle s, e, m \rangle) =
+       (-1)^s \cdot (1,m) \cdot 2^{e-127}
+       \mbox{ où } 1,m = 1 + \sum_{i = 1}^{23} m_{23-i} 2^{-i}
+       \mbox{ et } e \not\in \{ 0, 255 \}
+    \]
+</p>
+
+<p>
+Les cas où l'exposant est \(0\) ou \(255\) correspondent à des valeurs
+spéciales, par exemple des nombres très petits appelés <i>sous-normaux</i>, ou
+encore \(\infty\), ou encore la valeur indéfinie <i>Not-a-Number</i> (<i>NaN</i>) qui
+sert à propager des erreurs.
+</p>
+
+<p>
+Les détails fins du format IEEE-754 dépassent le cadre du cours. Si vous
+êtes intéressé, l'article
+<a href="https://www.itu.dk/~sestoft/bachelor/IEEE754_article.pdf"><span class="underline">What Every
+Computer Scientist Should Know About Floating-Point Arithmetic</span></a> de David
+Goldberg fournit une introduction raisonnablement détaillée. La page
+<a href="https://en.wikipedia.org/wiki/IEEE_754">IEEE-754</a> de la Wikipédia
+anglophone est aussi de bonne qualité.
+</p>
+</div>
+</div>
+<div id="outline-container-orga5ab621" class="outline-4">
+<h4 id="orga5ab621"><span class="section-number-4">2.2.3.</span> Interlude : représentations numériques de taille variable</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+Pour finir, une remarque importante : les représentations numériques
+décrites précédemment sont de taille bornée, ce qui est un prérequis pour
+une implémentation en matériel. En conséquence, elles ne peuvent décrire
+qu'un sous-ensemble fini de ℕ ou ℝ.
+</p>
+
+<p>
+En logiciel, on peut représenter une portion de ℕ ou ℝ limitée uniquement
+par la quantité de mémoire disponible. Par exemple, la bibliothèque
+<a href="https://gmplib.org">GNU MP</a> propose des vrais entiers mathématiques de
+taille arbitraire, et la bibliothèque <a href="https://www.mpfr.org">GNU MPFR</a>
+fait de même pour les nombres à virgule flottante.
+</p>
+</div>
+</div>
+<div id="outline-container-orgb518e0c" class="outline-4">
+<h4 id="orgb518e0c"><span class="section-number-4">2.2.4.</span> Caractères</h4>
+<div class="outline-text-4" id="text-2-2-4">
+</div>
+<ol class="org-ol">
+<li><a id="org2b8c28c"></a>ASCII<br />
+<div class="outline-text-5" id="text-2-2-4-1">
+<p>
+Le jeu de caractère ASCII (<i>American Standard Code for Information
+Interchange</i>) encode 128 caractères sur 7 bits. Il a été et reste très
+répandu, mais ses origines américaines le rendent inadapté à l'informatique
+moderne : il se restreint à l'alphabet latin, sans accents.
+</p>
+</div>
+</li>
+<li><a id="org2c815c2"></a>Unicode<br />
+<div class="outline-text-5" id="text-2-2-4-2">
+<p>
+Le consortium Unicode propose une norme capable de gérer un très grand
+nombre de caractères (149186 en septembre 2022). La norme divise le travail
+de codage en deux aspects :
+</p>
+
+<ol class="org-ol">
+<li>chaque caractère se voit assigné un entier unique compris entre 0 et
+0x10FFFF (soit un maximum théorique de 1,114M caractères), son <i>point de
+code</i>, indépendamment de tout codage concret ;</li>
+
+<li>un codage concret des entiers encodant chaque caractère, qui peut être
+plus ou moins complexe à coder/décoder.</li>
+</ol>
+
+<p>
+Pour ce qui est du premier aspect, précisons qu'Unicode comprend beaucoup
+plus que des caractères issus d'alphabets, puisqu'il contient aussi les
+diacritiques (accents, trémas, cédilles, etc.), les caractères
+mathématiques, les emojis, etc.
+</p>
+
+<p>
+Pour ce qui est du second, citons au moins deux codages intéressants.
+</p>
+
+<p>
+Le codage <b>UTF-32</b> code tout caractère sur 32 bits. Il s'agit donc d'un
+codage coûteux mais qui a l'avantage de la simplicité et rend certaines
+opérations efficaces, comme par exemple le calcul de la longueur d'une
+chaîne (si l'on ignore le problème de la normalisation, voir plus bas).
+</p>
+
+<p>
+Le codage <b>UTF-8</b> est un codage de longueur variable. Il est compatible
+avec ASCII : les caractères codables en ASCII sont codés sur 1 octet en
+UTF-8 et avec la même représentation. Les autres caractères sont codés sur
+2 à 4 octets.
+</p>
+
+<p>
+La norme Unicode est complexe. Par exemple, un même "caractère" (au sens
+humain) peut être réalisé par la combinaison de plusieurs points de code.
+Par exemple, le caractère <code>Ç</code> dispose d'un point de code dédié (0xC7), mais
+peut aussi être réalisé par le point de code <code>COMBINING CEDILLA</code> (0x327)
+précédé du point de code de <code>C</code> (0x43). Petite illustration en Python
+ci-dessous :
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="font-style: italic;">"\u00C7"</span>
+&#199;
+&gt;&gt;&gt; <span style="font-style: italic;">"\u0043\u0327"</span>
+C&#807;
+&gt;&gt;&gt; <span style="font-style: italic;">"\u0043"</span>
+C
+&gt;&gt;&gt; <span style="font-style: italic;">"\u0327"</span>
+ &#807;
+</pre>
+</div>
+
+<p>
+Ainsi, les séquences de points de code doivent être considérées modulo une
+relation d'équivalence qui exprime que <code>C</code> suivi de <code>COMBINING CEDILLA</code> ne
+doit pas être distingué de <code>Ç</code>. Pour cette raison, la norme Unicode décrit
+un algorithme de normalisation qui calcule pour toute séquence de points de
+code une autre séquence, sa <i>forme normale</i>. Cet algorithme vérifie des
+propriétés très classiques ; en écrivant \(\equiv\) pour l'équivalence et
+\(\mathit{nf}\) pour l'algorithme de normalisation, on a que
+</p>
+
+<ol class="org-ol">
+<li>toute séquence est équivalente à sa forme normale (\(s \equiv
+        \mathit{nf}(s)\)),</li>
+
+<li>deux séquences équivalentes ont la même forme normale (\(s_1 \equiv _2
+        \Rightarrow \mathit{nf}(s_1) = \mathit{nf}(s_2)\)),</li>
+
+<li>la normalisation est idempotente, une forme normale est sa propre forme
+normale (\(\mathit{nf}(\mathit{nf}(s)) = \mathit{nf}(s)\)).</li>
+</ol>
+
+<p>
+Le fragment de code Python montre un exemple de normalisation unicode. On
+doit spécifier la notion exacte de forme normale à utiliser, car la norme
+en propose plusieurs (ici <i>Normal Form Canonical Composition</i> ou <i>NFC</i>, qui
+recompose les combinaisons de caractère).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python">&gt;&gt;&gt; <span style="font-weight: bold;">len</span>(<span style="font-style: italic;">"\u0043\u0327"</span>)
+2
+&gt;&gt;&gt; <span style="font-weight: bold;">from</span> unicodedata <span style="font-weight: bold;">import</span> normalize
+&gt;&gt;&gt; normalize(<span style="font-style: italic;">"NFC"</span>, <span style="font-style: italic;">"\u0043\u0327"</span>)
+<span style="font-style: italic;">'&#199;'</span>
+&gt;&gt;&gt; <span style="font-weight: bold;">len</span>(normalize(<span style="font-style: italic;">"NFC"</span>, <span style="font-style: italic;">"\u0043\u0327"</span>))
+1
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Auteur: Adrien Guatto</p>
+<p class="date">Created: 2022-09-24 Sat 11:42</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
