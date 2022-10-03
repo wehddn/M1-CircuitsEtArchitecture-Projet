@@ -582,3 +582,20 @@ C
 >>> len(normalize("NFC", "\u0043\u0327"))
 1
      #+END_SRC
+* Cours 3 <2022-09-30>
+** Circuits élémentaires (§5)
+*** Décodeur et multiplexeur
+    Soit $k$ le nombre de bits d'entrée.
+
+    |---------------------------+----------------+---------------+----------------------|
+    | Circuit                   | #NOT           | #(AND₂+OR₂)   | $\Theta$(profondeur) |
+    |---------------------------+----------------+---------------+----------------------|
+    | Décodeur plat             | $k$            | $2^k(k-1)$    | $\log_2(k)$          |
+    | Décodeur dichotomique     | $2^k-1$ ou $k$ | $2^{k+1}-2$   | $k$                  |
+    | Multiplexeur plat         | $k$            | $2^k(k-1)+1$  | $\log_2(k)$          |
+    | Multiplexeur dichotomique | $2^k-1$ ou $k$ | $3 \cdot 2^k$ | $k$                  |
+    |---------------------------+----------------+---------------+----------------------|
+** Additionneurs, première partie (§6.1–§6.4)
+*** Demi-additionneur et additionneur complet
+*** Additionneur k bits par propagation de retenue
+*** Calcul des drapeaux
