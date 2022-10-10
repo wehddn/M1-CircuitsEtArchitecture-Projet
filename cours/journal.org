@@ -599,3 +599,5 @@ C
 *** Demi-additionneur et additionneur complet
 *** Additionneur k bits par propagation de retenue
 *** Calcul des drapeaux
+* Cours 4 <2022-10-07>
+** Additionneurs, deuxième partie (§6.5–§6.9)
