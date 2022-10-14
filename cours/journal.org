@@ -601,3 +601,126 @@ C
 *** Calcul des drapeaux
 * Cours 4 <2022-10-07>
 ** Additionneurs, deuxième partie (§6.5–§6.9)
+* Cours 5 <2022-10-14>
+** Mémoires (§7)
+   Les supports mémoire peuvent être caractérisés selon des axes distincts.
+
+   - Labilité : contenu fixé en usine ou bien réinscriptible ?
+
+   - Durabilité : information persistante ou volatile ?
+
+   - Mode d'accès : séquentiel ou aléatoire ?
+
+   Notons que ces axes ne sont pas indépendants : quelle serait l'utilité d'une
+   mémoire non-persistante dont le contenu est fixé en usine ? Pour cette
+   raison, la terminologie du domaine a tendance à rabattre certains axes sur
+   d'autres, ce qui peut donner des résultats incohérents.
+
+   |-----------------+------------------------+----------------------------+-----------------------------------+-----------------------------------+-------------------------------|
+   | Caractéristique | Read-Only Memory (ROM) | Random-Access Memory (RAM) | Erasable Programmable ROM (EPROM) | Electrically EPROM (EEPROM)/Flash | Ruban magnétique (historique) |
+   |-----------------+------------------------+----------------------------+-----------------------------------+-----------------------------------+-------------------------------|
+   | Labilité        | fixé en usine          | réinscriptible             | réinscriptible via ultraviolets   | réinscriptible (électriquement)   | réinscriptible                |
+   | Durabilité      | persistant             | volatile                   | persistant                        | persistant                        | persistant                    |
+   | Mode d'accès    | quelconque/aléatoire   | aléatoire                  | quelconque/aléatoire              | quelconque/aléatoire              | séquentiel                    |
+   |-----------------+------------------------+----------------------------+-----------------------------------+-----------------------------------+-------------------------------|
+
+   Ces technologies et leurs variations se distinguent aussi par leur coût de
+   production à taille de données fixée, ainsi que leur performances (latence,
+   débit). Ces caractéristiques réservent certaines technologies à certaines
+   utilisations. Par exemple, on va voir qu'il existe deux types de RAM, la RAM
+   dynamique (DRAM) réservée à la mémoire principale de l'ordinateur (objet
+   physique extérieur au processeur), et la RAM statique (SRAM) utilisée pour
+   les composants internes du processeur (p. ex., son cache).
+*** RAM dynamiques (§7.1)
+    Une RAM dynamique de 1 bit est réalisée en associant un transistor, pour
+    permettre la commande, et un condensateur, pour permettre de stocker une
+    charge électrique.
+
+    Une DRAM peut être synchrone ou asynchrone, selon son mode d'interaction
+    avec le processeur. Dans les deux cas, il y a ping-pong : le processeur
+    envoie une adresse à la DRAM, elle répond avec la donnée à cette adresse.
+
+    Dans le cas asynchrone, la réponse arrive après un laps de temps inconnu, le
+    processeur doit donc attendre la réponse.
+
+    Dans le cas synchrone, la DRAM répond au bout d'un nombre de cycles
+    d'horloge fixé. (On détaillera bientôt la notion d'horloge.) Ce
+    fonctionnement permet les accès /pipelinés/, comme lors d'un travail à la
+    chaîne. Supposons par exemple que la mémoire prenne trois cycles d'horloge à
+    répondre, et que la mémoire contienne la valeur $v_i$ à l'adresse $a_i$.
+
+    |-----------+-----------+-----------+----------+----------+-----------+---+---+----------+-----|
+    | GET $a_1$ | GET $a_2$ | GET $a_3$ |          |          | GET $a_4$ |   |   |          | ... |
+    |           |           | OK $v_1$  | OK $v_2$ | OK $v_3$ |           |   |   | OK $v_4$ |     |
+    |           |           |           |          |          |           |   |   |          |     |
+    |-----------+-----------+-----------+----------+----------+-----------+---+---+----------+-----|
+
+    Cet exemple illustre la différence de deux mesures de performance : le
+    nombre de données transmises par unité de temps (le /débit/) d'une part, et
+    le temps d'attente d'une réponse (la /latence/) de l'autre. Le
+    fonctionnement pipeliné n'améliore pas la latence mais permet un débit de 1
+    donnée par cycle.
+*** RAM statiques (§7.2)
+    Elles sont réalisables uniquement en utilisant uniquement des transistors.
+
+    Attention : il s'agit toutefois de circuits *cycliques* dont les sorties
+    vont dépendre des valeurs présentes précédemment sur les fils impliqués dans
+    le cycle, et éventuellement du temps de propagation de l'information. Par
+    exemple, le circuit
+
+      x = NOT(y)
+      y = NOT(X)
+
+    a deux états stables, respectivement x = 1 et y = 0 ou bien x = 0 et y = 1,
+    et, si le circuit commence dans un état instable comme par exemple x = 0 et
+    y = 0, il atteindra un état stable indéterminé.
+**** Verrou SR
+     Le circuit précédent n'est pas très intéressant, parce qu'on ne peut pas
+     contrôler l'état stable du circuit. Le verrou SR (/Set-Reset latch/) y
+     remédie en introduisant deux entrées SET et RESET. On peut l'implémenter
+     avec des NOR ou avec des NAND. La table suivante décrit son
+     comportement. On voit que la sortie $B$ dépend de la valeur $B_p$ présente
+     juste avant le changement de $S$ et $R$.
+
+     |-----+-----+-------+-----+----------------|
+     | $S$ | $R$ | $B_p$ | $B$ | $\overline{B}$ |
+     |-----+-----+-------+-----+----------------|
+     | $0$ | $0$ | $x$   | $x$ | $\overline{x}$ |
+     | $1$ | $0$ | $x$   | $1$ | $0$            |
+     | $0$ | $1$ | $x$   | $0$ | $1$            |
+     | $1$ | $1$ | $x$   | $1$ | $1$            |
+     |-----+-----+-------+-----+----------------|
+
+     La dernière ligne est *interdite* puisque $\overline{B}$ n'est plus la
+     négation de $B$. Plus grave, le passage de $R = S = 1$ à $R = S = 0$ est
+     très périlleux : si les deux entrées passent à $0$ au même moment, le
+     résultat obtenu dépend du temps de propagation des données sur les fils !
+**** Verrou D
+     Le verrou D a deux entrées /data/ ($\mathit{D}$) et /write/
+     ($\mathit{W}$). On la réalise à l'aide d'un verrou SR dont on contrôle les
+     entrées comme suit.
+
+     \[
+       R = \overline{D} W \\
+       S = D W
+     \]
+
+     Observons en particulier que $RS$ n'est jamais vrai.
+**** Bascule D
+     Elle a deux entrées, /data/ ($D$) et /clock/ ($\mathit{Clk}$). Elle est
+     obtenue en mettant deux verrous D en série, et en contrôlant l'une des deux
+     entrées $W$ par $\mathit{Clk}$ et l'autre par sa négation.
+
+     On obtient ainsi un composant mémorisant qui retarde l'entrée /D/ d'un
+     cycle d'horloge, c'est-à-dire d'un front descendant de
+     $\mathit{Clk}$. L'exemple sera développé en travaux dirigés.
+*** Organisation de la mémoire (§7.3)
+**** Mémoires $k \times n$ bits
+     Remarque : le cas $n = 1$ est particulièrement intéressant parce que c'est
+     celui qui est réalisé en pratique pour les circuits élémentaires. Les cas
+     $n > 1$ sont obtenus en assemblant des mémoires de largeur $n = 1$.
+**** Mémoires $1$ bit
+     La solution en grille coûte $2^(k/2+1) (k-1)$ transistors tandis que celle
+     en une seule colonne coûte $2^k (k - 1)$ transistors !
+*** Mémoires associatives
+    Cette partie n'a pas été traitée en cours.
