@@ -724,3 +724,128 @@ C
      en une seule colonne coûte $2^k (k - 1)$ transistors !
 *** Mémoires associatives
     Cette partie n'a pas été traitée en cours.
+* Cours 6 <2022-10-20>
+** Circuits séquentiels (§8)
+   Un circuit combinatoire n'a aucune notion de temps, à part le temps de
+   propagation de l'information le long des fils.
+
+   Par oppostion, un circuit séquentiel dispose d'un fil distingué qui lui
+   transmet son /horloge/. L'horloge est un signal périodique dont les fronts
+   montants (ou descendants, au choix) contrôlent le changement des éléments
+   mémorisants (bascules D, etc.) du circuit.
+
+   Pour générer un signal suffisamment périodique pour servir d'horloge, on a
+   besoin d'un oscillateur le plus stable possible. La solution la plus répandue
+   est d'utiliser un cristal de quartz : il a la spécificité de se déformer
+   lorsque soumis à un champ électrique, puis de reprendre sa forme initiale une
+   fois le champ coupé. Ce phénomène produit une tension. L'alternance répétée
+   entre l'état déformé et l'état reformé génère le signal d'horloge.
+
+   Pour plus d'information sur les oscillateurs à base de quartz, voir la page
+   Wikipédia anglaise, très complète.
+
+   https://en.wikipedia.org/wiki/Crystal_oscillator
+*** Principe (§8.1)
+*** Horloge (§8.2)
+*** Exemple (§8.3)
+**** Guirlande lumineuse
+     Remarque : le circuit rend explicite la différence entre
+     \[
+     S = \mathtt{if}~\mathit{Cmd}~\mathtt{then}~S + 1~\mathtt{else}~S - 1
+     \]
+     et
+     \[
+     S = A + (\mathtt{if}~\mathit{Cmd}~1~\mathtt{else}~- 1)
+     \]
+     où on a économisé un additionneur. En logiciel, c'est la même chose !
+**** Automate
+     On se propose de réaliser l'automate déterministe complet qui reconnaît le
+     langage $(a b^* c)^+ \subseteq { a, b, c }^*$. L'automate a quatre états X,
+     Y, Z et D avec X initial et Z final. Les transitions sont les suivantes :
+
+     |--------------+--------+-------------|
+     | État courant | Lettre | Nouvel état |
+     |--------------+--------+-------------|
+     | X            | a      | Y           |
+     | Y            | b      | Y           |
+     | Y            | c      | Z           |
+     | Z            | a      | Y           |
+     |--------------+--------+-------------|
+
+     Dans tous les autres cas, on va dans l'état D.
+***** Codage logarithmique
+      On code un automate complet à $k$ états sur $\log_2 k$ bits, et on
+      l'implémente en calculant sa table de transition.
+
+      Les lettres sont également codées sur 2 bits.
+
+      On écrit $s$ pour l'état au début du cycle d'horloge courant, $s'$ pour
+      l'état à la fin du cycle d'horloge courant. La fonction de transition
+      exprime $s'$ en fonction de $s$ et de la lettre courante $l$.
+
+      |-------+-------+-------+-------+--------+--------+--------------|
+      | $s_1$ | $s_0$ | $l_1$ | $l_0$ | $s'_1$ | $s'_0$ | Commentaire  |
+      |-------+-------+-------+-------+--------+--------+--------------|
+      |     0 |     0 |     0 |     0 |      0 |      1 | X -> Y sur A |
+      |     0 |     0 |     0 |     1 |      1 |      1 |              |
+      |     0 |     0 |     1 |     0 |      1 |      1 |              |
+      |     0 |     0 |     1 |     1 |      1 |      1 |              |
+      |-------+-------+-------+-------+--------+--------+--------------|
+      |     0 |     1 |     0 |     0 |      1 |      1 |              |
+      |     0 |     1 |     0 |     1 |      0 |      1 | Y -> Y sur B |
+      |     0 |     1 |     1 |     0 |      1 |      0 | Y -> Z sur C |
+      |     0 |     1 |     1 |     1 |      1 |      1 |              |
+      |-------+-------+-------+-------+--------+--------+--------------|
+      |     1 |     0 |     0 |     0 |      0 |      1 | Z -> Y sur A |
+      |     1 |     0 |     0 |     1 |      1 |      1 |              |
+      |     1 |     0 |     1 |     0 |      1 |      1 |              |
+      |     1 |     0 |     1 |     1 |      1 |      1 |              |
+      |-------+-------+-------+-------+--------+--------+--------------|
+      |     1 |     1 |     0 |     0 |      1 |      1 |              |
+      |     1 |     1 |     0 |     1 |      1 |      1 |              |
+      |     1 |     1 |     1 |     0 |      1 |      1 |              |
+      |     1 |     1 |     1 |     1 |      1 |      1 |              |
+      |-------+-------+-------+-------+--------+--------+--------------|
+
+      On en déduit les équations suivantes.
+
+      \begin{align*}
+        s'_1
+        & = \overline{
+          \overline{s_1} \overline{s_0} \overline{l_1} \overline{l_0}
+          + \overline{s_1} s_0 \overline{l_1} l_0
+          + \overline{s_1} s_0 l_1 l_0
+        }
+        \\
+        s'_0
+        & = \overline{
+          \overline{s_1} \overline{s_0} \overline{l_1} \overline{l_0}
+          + \overline{s_1} s_0 \overline{l_1} l_0
+          + \overline{s_1} s_0 l_1 l_0
+        }
+      \end{align*}
+***** Codage "one hot"
+      On utilise $k$ bits pour représenter $k$ états. Le bit $s_U exprime
+      "l'automate est dans l'état $U$".
+
+      \begin{align*}
+        s'_X & = 0 \\
+        s'_Y & = s_X \overline{l_1} \overline{l_0} + s_y \overline{l_1} l_0 + s_z l_1 \overline{l_0} \\
+        s'_Z & = s_X l_1 \overline{l_0}
+      \end{align*}
+
+      Inconvénient : exponentiellement plus coûteux en espace.
+
+      Avantages : les formules de l'automate ont tendance à être plus simples ;
+      n'a pas besoin que l'automate soit complet *ou déterministe*.
+** Architecture générale d'un micro-processeur (§9)
+   L'exécution d'une instruction se décompose très schématiquement en trois
+   grandes étapes LIRE / CALCULER / ÉCRIRE, qui elles-même se subdivisent en
+   plusieurs sous-étapes : accès à la mémoire (aussi bien pour lire
+   l'instruction courante que ses opérandes), accès aux registres, stockage des
+   resultats en mémoire, etc.
+** Micro-processeur LC-3 (§10)
+   On couvre jusqu'aux paragraphes introductifs de §10.4 (avant §10.4.1).
+** TODO Pour la prochaine fois
+   - Amener son ordinateur portable à la prochaine séance de TD/TP.
+   - De préférence, installer Logisim avant la séance.
