@@ -849,3 +849,34 @@ C
 ** TODO Pour la prochaine fois
    - Amener son ordinateur portable à la prochaine séance de TD/TP.
    - De préférence, installer Logisim avant la séance.
+* Cours 7 <2022-10-28>
+** Instructions du LC-3 (§10.4)
+   On termine cette section.
+*** Remarque culturelle
+    L'instruction /Load Effective Adresse/ (LEA) appartient également au jeu
+    d'instruction x86(-64). C'est même l'une des plus utilisées !
+*** Sauts indirects (JMP)
+    C'est utile dans absolument tous les langages de programmation généralistes,
+    quels qu'ils soient. Ils ont tous besoin de sauts indirects pour implémenter
+    l'appel à un fragment de code statiquement inconnu, construction au coeur de
+    la programmation modulaire.
+** Programmation du LC-3 (§11)
+*** Remarque terminologique
+    Informellement, on utilise souvent le terme "assembleur" pour parler du
+    langage textuel formé par le jeu d'instruction de l'architecture considérée.
+    Rigoureusement, il faudrait plutôt parler de /langage d'assemblage/.
+
+    Le terme "assembleur" devrait être réservé pour le logiciel qui lit un
+    fichier contenant du langage d'assemblage (textuel, donc) et produit un
+    fichier contenant du langage machine (binaire, donc). Dans le cas du LC-3,
+    `lc3-as` est l'assembleur ; sur votre ordinateur personnel, vous disposez
+    sans doute de `gas`, l'assembleur du projet GNU.
+
+    L'assembleur effectue une tâche très simple et mécanique puisque les
+    instructions du langage d'assemblage et celles du code machine sont en
+    bijection, ou quasiment (cf. RET vs. JMP R7).  En plus du codage,
+    l'assembleur remplit une autre tâche très utile : remplacer les étiquettes
+    utilisées dans le format textuel au niveau des sauts par des /offsets/ qu'il
+    a calculés.
+
+    On s'arrête avant §11.1.1.
