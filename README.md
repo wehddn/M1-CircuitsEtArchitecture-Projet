@@ -18,6 +18,10 @@ Diderot](https://u-paris.fr/eidd/). Ces documents concernent l'année
 - Le [journal](cours/journal.org) contient un bref descriptif du l'avancé dans
   les notes de cours.
 
+- Le dossier [tools/lc3](tools/lc3) contient une copie des LC-3 tools écrits par
+  M. Steve Lumetta, qui permettent d'assembler et exécuter du code assembleur
+  LC-3 sur une machine disposant d'un compilateur C.
+
 **Attention** : les notes de cours sont succinctes et ne présentent que les
 informations essentielles. Leur lecture ne peut donc pas se substituer à la
 présence active en cours.
@@ -28,7 +32,7 @@ Les feuilles d'exercice peuvent être trouvées dans le répertoire [TD](td/).
 
 # Projet
 
-Bientôt disponible.
+Le projet est disponible dans le répertoire [projet](projet/).
 
 ## Paramétrage
 
