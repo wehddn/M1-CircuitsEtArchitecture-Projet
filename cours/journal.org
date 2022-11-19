@@ -431,7 +431,7 @@
       |-----------+-----------+-----------+-----------+-------+---------------|
 
       On constate que les cas de dépassement sont exactements ceux où $c_k \ne
-      c_{k-1}$, c'est-à-dire où~$c_k \oplus c_{k+1}$ est vrai.
+      c_{k-1}$, c'est-à-dire où $c_k \oplus c_{k+1}$ est vrai.
 *** Nombres réels et virgule flottante (§3.3)
     (/Cette partie n'a pas été traitée en cours mais abordée en travaux
     dirigés/.)
@@ -880,3 +880,143 @@ C
     a calculés.
 
     On s'arrête avant §11.1.1.
+* Cours 08 <2022-11-18>
+** Programmation du LC-3 (§11)
+   Une version des ~lc3tools~ est fournie dans le répertoire ~tools/lc3~ du
+   cours. Ils peuvent être compilés suivant la recette UNIX classique.
+
+   #+BEGIN_SRC shell
+$ cd tools/lc3
+$ ./configure
+$ make
+   #+END_SRC
+
+   Les exemples de code programmé durant ce cours sont disponibles dans le
+   sous-répertoire ~tools/lc3/examples/~.
+*** Longueur d'une chaîne, version 1
+    On voit comment adapter le code C naïf en le traduisant littéralement en
+    assembleur. On peut ensuite essayer d'optimiser. Mais optimiser quoi ?
+
+    Si l'on pense à notre implémentation très simple du LC-3, on voit que toutes
+    les instructions ont le même coût, soit 2 cycles. Optimiser, pour nous, ce
+    sera donc simplement réduire le nombre d'instructions exécutées.
+
+    (Ce n'est pas le cas de processeurs plus sophistiqués où les instructions
+    ont un temps d'exécution (une /latence/) variable ; c'est déjà le cas pour
+    le processeur LC-3 décrit dans le livre de Patt & Patel, où les accès
+    mémoires peuvent prendre bien plus de deux cycles !)
+
+    Notre code passe l'essentiel de son temps dans la boucle, du moins si la
+    chaîne de caractère est longue. Notre but est donc de réduire le nombre
+    d'instructions dans le code de la boucle, quitte à augmenter d'un facteur
+    constant la longueur du code englobant.
+*** Réduire le nombre de sauts
+    Peut-on éviter de faire deux sauts dans le corps de la boucle ? Oui, grâce à
+    une observation générale sur l'équivalent des boucles ~while~ en assembleur.
+    La boucle ~while~ générique ressemble au code suivant.
+
+    #+BEGIN_SRC assembly
+loop: ...               ; code mettant à jour rflags pour le test de sortie
+      BR[n][z][p] exit  ; test de sortie de boucle
+      ...               ; corps de la boucle
+      BR loop           ; itération suivante
+exit: ...               ; code après la boucle
+    #+END_SRC
+
+    Une astuce classique pour réduire le nombre d'instructions dans le corps de
+    la boucle consiste à sortir le test pour éviter d'avoir deux branchements.
+
+    #+BEGIN_SRC assembly
+      ...               ; code mettant à jour rflags pour le test de sortie
+      BR[n][z][p] exit  ; test de non prise de la boucle
+loop: ...               ; corps de la boucle
+      ...               ; code mettant à jour rflags pour le test de sortie
+      BR[n][z][p] loop  ; test de sortie/continuation de boucle
+exit: ...               ; code après la boucle
+    #+END_SRC
+
+    Cette astuce revient à réécrire l'équivalent des boucles ~while (cond) {
+    body }~ en ~if (cond) { do { body } while (cond) }~. On gagne en taille de
+    code si le test de fin de boucle est petit par rapport au code.
+**** Deuxième astuce
+     On peut éviter d'avoir deux incrémentations en calculant une différence
+     dans la sortie de la boucle.
+*** Multiplication
+    L'implémentation itérative naïve de $x \cdot n$ ne pose pas de problème mais
+    est très lente, au point d'être probablement inutilisable en pratique.
+
+    On va exploiter une méthode logarithmique en la valeur de $n$, et donc
+    linéaire en la taille de $n$, c'est-à-dire en son nombre de bits.
+**** Schéma de Horner
+     Soit $P[X]$ un polynôme
+
+     \[
+     P[X] = a_0 + a_1 X + a_2 X^2 + \ldots + a_{n-1} X^{n-1} + a_n X^n
+     \]
+
+     de degré $n$. Pour évaluer $P$ en un point $x$, on peut bien sûr substituer
+     substituant $x$ pour $X$ dans la formule ci-dessus. Le calcul du monome de
+     degré $i$ nécessite alors $i$ multiplications, et l'évaluation exige donc
+
+     \[
+     \sum_{i = 0}^n i = \frac{n(n + 1)}{2}
+     \]
+
+     multiplications en tout.
+
+     Une autre solution, souvent appelée /schéma de Horner/, consiste à
+     factoriser les multiplications par les puissances de X pour diminuer le
+     nombre de produits.
+
+     \[
+     P[X] = a_0 + X(a_1 + X (a_2 + \dots X(a_{n-1} + X a_n))).
+     \]
+
+     On retombe à $n$ multiplications.
+**** Application à la multiplication rapide
+     On applique l'idée du schéma de Horner à la multiplication de $a$ par $b$.
+     Écrivons $b$ en base $2$ comme $b = \sum_{i = 0}^k b_i 2^i$. On a alors
+
+     \begin{align*}
+       a \cdot b
+       & =
+       a \cdot \sum_{i = 0}^{k-1} b_i 2^i
+       \\ & =
+       \sum_{i = 0}^{k-1} a b_i 2^i
+     \end{align*}
+
+     On reconnaît l'évaluation du polynôme $P[X] = \sum_{i = 0}^{k-1} (a b_i)
+     X^i$ en $2$. On peut donc utiliser le schéma de Horner.
+
+     On pose
+     \[
+       x_i = \sum_{j = i}^{k-1} a b_j 2^{j-i}
+     \]
+     où chacun des $x_i$ représente une des étapes du schéma de Horner.
+     En particulier, on a $x_k = 0$ et $x_0 = a \cdot b$. La nature
+     récursive de schéma de Horner s'exprime par l'équation suivante, qui
+     suppose $i > 0$.
+
+     \begin{align*}
+       x_{i-1}
+       & =
+       \sum_{j = i-1}^{k-1} a b_j 2^{j-i+1}
+       \\ & =
+       a b_{i-1}
+       + \sum_{j = i}^{k-1} a b_j 2^{j-i} 2
+       \\ & =
+       a b_{i-1}
+       + 2 x_i
+       \\ & =
+       \begin{cases}
+         a + 2 x_i & \mbox{si } b_{i-1} = 1
+         \\
+         2 x_i & \mbox{si } b_{i-1} = 0
+       \end{cases}
+     \end{align*}
+
+     Le code fourni calcule~$x_{i-1}$ à partir de $x_i$, pour $i$ variant de
+     $16$ à $0$. Il suffit de tester 
+
+     Le calcul termine en 16 itérations dans tous les cas, alors que la
+     multiplication naïve termine en $2^{15}$ étapes dans le pire cas.
