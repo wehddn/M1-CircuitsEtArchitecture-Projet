@@ -1,0 +1,12 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	strncpy           000C
+//	loop              0013
+//	end               001A
+//	str1              0020
+//	str2              0025
+//	sttop             0026
+//	stbot             008A
+

@@ -1,0 +1,15 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	strcmp            0009
+//	loop              0012
+//	less              001E
+//	less2             0020
+//	greater           0023
+//	end               0026
+//	str1              002F
+//	str2              0034
+//	sttop             0039
+//	stbot             009D
+
