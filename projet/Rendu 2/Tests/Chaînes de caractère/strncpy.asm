@@ -1,7 +1,7 @@
 	.ORIG x0000
         LEA R6,stbot
         AND R0, R0, 0
-        ADD R0, R0, 4
+        ADD R0, R0, 5
         ADD R6,R6,-3
         LEA R1, str1
         LEA R2, str2
@@ -24,6 +24,7 @@ strncpy:ADD R6,R6,-4
 loop:   ADD R0, R0, -1
         BRn end
         LDR R3, R1, 0
+        BRz end
         STR R3, R2, 0
         ADD R1, R1, 1
         ADD R2, R2, 1
