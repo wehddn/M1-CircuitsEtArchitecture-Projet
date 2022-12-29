@@ -2,13 +2,13 @@
 // Scope level 0:
 //	Symbol Name       Page Address
 //	----------------  ------------
-//	index             300A
-//	bouclei           3015
-//	finition          301E
-//	end               301F
-//	char              3027
-//	string            3028
-//	sttop             302E
-//	stbot             3092
-//	stop              3092
+//	index             000A
+//	bouclei           0017
+//	finition          001E
+//	end               001F
+//	char              0027
+//	string            0028
+//	sttop             002E
+//	stbot             0092
+//	stop              0092
 
