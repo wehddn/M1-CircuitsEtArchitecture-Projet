@@ -8,7 +8,7 @@
             JSR rindex
             LDR R0,R6,0
             ADD R6,R6,2
-            BR stop
+            NOP
 
 
 rindex:     ADD R6,R6,-5
@@ -50,4 +50,4 @@ char:   .FILL 69;; code ASCII de E
 string: .STRINGZ "TESTE"
 sttop: .BLKW 100
 stbot: 
-stop:   .END
+   .END

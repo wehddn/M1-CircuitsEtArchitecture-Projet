@@ -8,7 +8,7 @@
         JSR strcmp
         LDR R0,R6,0
         ADD R6,R6,2
-        BR stop
+        NOP
 
 strcmp: ADD R6,R6,-6
         STR R0,R6,0
@@ -61,4 +61,4 @@ str1:	.STRINGZ "abcd"
 str2:   .STRINGZ "abca"
 sttop: .BLKW 100
 stbot: 
-stop:	.END
+	.END
