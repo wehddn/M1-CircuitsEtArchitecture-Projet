@@ -5,9 +5,9 @@
         ADD R6,R6,-3
         LEA R1, str1
         LEA R2, str2
-        LDR R1,R6,0
-        LDR R2,R6,1
-        LDR R3,R6,2
+        STR R1,R6,0
+        STR R2,R6,1
+        STR R3,R6,2
         JSR strncpy
         LDR R0,R6,0
         ADD R6,R6,2

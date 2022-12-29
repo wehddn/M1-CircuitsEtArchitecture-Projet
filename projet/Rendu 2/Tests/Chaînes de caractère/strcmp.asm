@@ -3,8 +3,8 @@
         ADD R6,R6,-2
         LEA R1, str1
         LEA R2, str2
-        LDR R1,R6,0
-        LDR R2,R6,1
+        STR R1,R6,0
+        STR R2,R6,1
         JSR strcmp
         LDR R0,R6,0
         ADD R6,R6,2

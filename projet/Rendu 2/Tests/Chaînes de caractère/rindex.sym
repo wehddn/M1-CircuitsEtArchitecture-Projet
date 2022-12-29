@@ -1,0 +1,15 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	rindex            300A
+//	boucleri          3015
+//	t                 301D
+//	finition          301F
+//	end               3020
+//	char              3028
+//	string            3029
+//	sttop             302F
+//	stbot             3093
+//	stop              3093
+
