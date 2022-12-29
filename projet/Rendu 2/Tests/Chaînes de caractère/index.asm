@@ -8,7 +8,7 @@
             JSR index
             LDR R0,R6,0
             ADD R6,R6,2
-            BR stop
+            NOP
             
 ;;l'entete de la fonction est index(char a,char* string,)
 index:      ADD R6,R6,-5
@@ -54,4 +54,4 @@ string: .STRINGZ "TESTE"
 sttop: .BLKW 100
 stbot: 
 
-stop:    .END
+    .END

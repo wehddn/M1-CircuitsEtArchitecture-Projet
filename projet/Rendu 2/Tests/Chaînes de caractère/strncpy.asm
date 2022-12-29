@@ -11,10 +11,10 @@
         JSR strncpy
         LDR R0,R6,0
         ADD R6,R6,2
-        BR stop
+        NOP
 
 sttop: .BLKW 100
-stbot: 
+stbot:  
 
 strncpy:ADD R6,R6,-4
         STR R1,R6,0
@@ -43,4 +43,4 @@ end:    LDR R1,R6,0
 str1:	.STRINGZ "abcd"
 str2:   .STRINGZ ""
 
-stop:	.END
+	.END
