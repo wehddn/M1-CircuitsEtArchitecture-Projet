@@ -8,6 +8,7 @@
         JSR strcpy
         LDR R0,R6,0
         ADD R6,R6,2
+        Br stop
 
 strcpy: ADD R6,R6,-4
         STR R1,R6,0
@@ -34,4 +35,4 @@ str1:	.STRINGZ "abcd"
 str2:   .STRINGZ ""
 sttop: .BLKW 100
 stbot: 
-	.END
+stop:	.END
