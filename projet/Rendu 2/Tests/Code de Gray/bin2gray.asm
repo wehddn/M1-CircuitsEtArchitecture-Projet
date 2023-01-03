@@ -1,5 +1,12 @@
             .ORIG x0000
             LEA R6, stbot
+            ADD R6,R6,-1
+            AND R0,R0,0
+            ADD R0,R0,7
+            STR R0,R6,0
+            JSR binToGray
+            LDR R0,R6,0
+            ADD R6,R6,1
 
 binToGray:  ;;sauvegarde
             ADD R6,R6,-5

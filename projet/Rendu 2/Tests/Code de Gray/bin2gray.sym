@@ -1,0 +1,15 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	binToGray         0008
+//	rightshift        0025
+//	again             002D
+//	sousroutine       0033
+//	neg               0037
+//	fin               0039
+//	retour            003A
+//	masque            0041
+//	sttop             0042
+//	stbot             00A6
+
