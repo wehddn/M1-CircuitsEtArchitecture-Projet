@@ -5,7 +5,13 @@
             STR R0,R6,0
             LEA R0,string
             STR R0,R6,1
-            JSR index
+            AND R1,R1,0
+            AND R2,R2,0
+            ADD R1,R1,10
+            ADD R2,R2,15
+            ADD R2,R2,9 ;on a mis les valeur 10 et 24 dans R1 et R2
+                        ;normalement après que la sous-routine soit executé R1 et R2 devraient avoir les meme valeur
+            JSR index   
             LDR R0,R6,0
             ADD R6,R6,2
             NOP

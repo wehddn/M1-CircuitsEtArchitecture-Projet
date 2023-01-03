@@ -2,11 +2,11 @@
 // Scope level 0:
 //	Symbol Name       Page Address
 //	----------------  ------------
-//	sttop             000A
-//	stbot             006E
-//	strcpy            006E
-//	loop              0075
-//	end               007B
-//	str1              0081
-//	str2              0086
+//	sttop             000F
+//	stbot             0073
+//	strcpy            0073
+//	loop              007A
+//	end               0080
+//	str1              0086
+//	str2              008B
 

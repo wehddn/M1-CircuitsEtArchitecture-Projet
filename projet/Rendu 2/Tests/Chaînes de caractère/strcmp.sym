@@ -2,14 +2,14 @@
 // Scope level 0:
 //	Symbol Name       Page Address
 //	----------------  ------------
-//	strcmp            000A
-//	loop              0013
-//	less              001F
-//	less2             0021
-//	greater           0024
-//	end               0027
-//	str1              0030
-//	str2              0035
-//	sttop             003A
-//	stbot             009E
+//	strcmp            000F
+//	loop              0018
+//	less              0024
+//	less2             0026
+//	greater           0029
+//	end               002C
+//	str1              0035
+//	str2              003A
+//	sttop             003F
+//	stbot             00A3
 
