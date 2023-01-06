@@ -1,7 +1,6 @@
 	.ORIG x0000
         LEA R6,stbot
-        AND R0, R0, 0
-        ADD R0, R0, 5
+        LD R0, n
         ADD R6,R6,-3
         LEA R1, str1
         LEA R2, str2
@@ -18,9 +17,6 @@
         LDR R0,R6,0
         ADD R6,R6,2
         NOP
-
-sttop: .BLKW 100
-stbot:  
 
 strncpy:ADD R6,R6,-4
         STR R1,R6,0
@@ -46,7 +42,9 @@ end:    LDR R1,R6,0
         ADD R6,R6,4
         RET
 
+n:      .FILL 3
 str1:	.STRINGZ "abcd"
 str2:   .STRINGZ ""
-
+        .BLKW 100
+stbot:  
 	.END
