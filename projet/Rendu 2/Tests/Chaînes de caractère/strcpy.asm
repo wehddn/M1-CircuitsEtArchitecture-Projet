@@ -16,9 +16,6 @@
         ADD R6,R6,2
         NOP
 
-sttop: .BLKW 100
-stbot: 
-
 strcpy: ADD R6,R6,-4
         STR R1,R6,0
         STR R2,R6,1
@@ -42,5 +39,6 @@ end:    LDR R1,R6,0
         RET
 str1:	.STRINGZ "abcd"
 str2:   .STRINGZ ""
-
+        .BLKW 100
+stbot: 
 	.END
