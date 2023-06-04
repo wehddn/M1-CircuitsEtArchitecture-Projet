@@ -1,0 +1,8 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	grayToBin         0008
+//	sttop             0014
+//	stbot             0078
+

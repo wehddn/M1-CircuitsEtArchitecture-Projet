@@ -1,0 +1,13 @@
+// Symbol table
+// Scope level 0:
+//	Symbol Name       Page Address
+//	----------------  ------------
+//	index             000F
+//	bouclei           001C
+//	finition          0023
+//	end               0024
+//	char              002C
+//	string            002D
+//	sttop             0033
+//	stbot             0097
+
